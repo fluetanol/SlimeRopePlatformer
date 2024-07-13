@@ -1,0 +1,22 @@
+{
+    "name": "PlayerControls",
+    "maps": [
+        {
+            "name": "Locomotion",
+            "id": "2913d7eb-e834-4e42-a059-038462ccaa38",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "337a87e1-b536-4bec-bb6e-ec3189f44b6b",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": []
+        }
+    ],
+    "controlSchemes": []
+}
