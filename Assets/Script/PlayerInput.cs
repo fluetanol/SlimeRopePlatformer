@@ -1,39 +1,50 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public class PlayerInput : MonoBehaviour, InputInterface{
 
-public class PlayerInput : MonoBehaviour
-{
-    public float _speed;
-    public float _accelTime;
+    public float MaxSpeed;
+    public float NormalAccelTime;
+    public float StopAccelTime;
+    public float Gravity;
+    public float Resistence;
 
+    
+
+    private InterfaceFactory _interfaceFactory;
+    private NormalMoveInterface _normalMoveInterface;
     private PlayerControls _playerControls;
     private Rigidbody2D _playerRigidbody;
-    private Vector2 _move;
-    private Vector2 _direction;
+    
+    private Vector2 _normalMove;
+    private Vector2 _gravityMove;
 
     void Awake(){
         PlayerInputInitialize();
-        ComponentInitialize();   
+        ComponentInitialize(); 
+        InterfaceInitialize();
     }
     void OnEnable() => _playerControls.Enable();
     void OnDisable() => _playerControls.Disable();
 
     void FixedUpdate(){
-        if(Time.fixedTime % 2 == 0){  print(_playerRigidbody.position); }
+         _normalMove = _normalMoveInterface.NormalMovingVector();
 
+         Vector2 GravityAccel = Vector2.down * Gravity * Time.fixedDeltaTime;
+         _gravityMove += GravityAccel * Time.fixedDeltaTime;
+         print(_gravityMove + " " +GravityAccel);
 
-        _move = _direction * _speed * Time.fixedDeltaTime;
-        _playerRigidbody.MovePosition(_playerRigidbody.position + _move);
-        
+        _playerRigidbody.MovePosition(_playerRigidbody.position + _normalMove + _gravityMove);
     }
-
 
     //initialize GetComponent
     private void ComponentInitialize(){
         _playerRigidbody = GetComponent<Rigidbody2D>();
     }
 
+    private void InterfaceInitialize(){
+        _normalMoveInterface = new PlayerAccelNormalMove(MaxSpeed, NormalAccelTime, StopAccelTime);
+    }
     //initialize Player Input
     private void PlayerInputInitialize(){
         _playerControls = new();
@@ -42,7 +53,10 @@ public class PlayerInput : MonoBehaviour
         _playerControls.Locomotion.Move.canceled += OnMove;
     }
 
-    void OnMove(InputAction.CallbackContext ctx){
-        _direction = ctx.ReadValue<Vector2>();
+    public void OnMove(InputAction.CallbackContext ctx){
+        Vector2 _direction = ctx.ReadValue<Vector2>();
+        _normalMoveInterface.SetDirectionVector(_direction);
     }
 }
+
+

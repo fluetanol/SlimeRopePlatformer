@@ -168,6 +168,7 @@ GameObject:
   - component: {fileID: 529948765}
   - component: {fileID: 529948764}
   - component: {fileID: 529948763}
+  - component: {fileID: 529948767}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -262,7 +263,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 12
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -293,6 +294,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &529948767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529948762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c31ffd25f1b77da40b2a5a85da998218, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 2060822707}
 --- !u!1 &732509862
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,7 +385,7 @@ Transform:
   m_GameObject: {fileID: 732509862}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7437045, y: 4.024349, z: 4.183949}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 10, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -403,8 +417,8 @@ Transform:
   m_GameObject: {fileID: 803607938}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.513, y: -2.5042, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -10, z: 0}
+  m_LocalScale: {x: 100, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 85099902}
@@ -542,7 +556,7 @@ Transform:
   m_GameObject: {fileID: 2060822707}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 15.2359, y: 13.090099, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -560,8 +574,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a375d4d4e69cf44a8d5df93a4f0e18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
-  _accelTime: 0
+  MaxSpeed: 15
+  NormalAccelTime: 0.25
+  StopAccelTime: 0.5
+  Gravity: 9.8
+  Resistence: 0
 --- !u!70 &2060822711
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
