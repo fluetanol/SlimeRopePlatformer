@@ -55,6 +55,4 @@ public class PlayerAccelNormalMove : NormalMoveInterface
     {
         _normalMove = _velocity * Time.fixedDeltaTime;
     }
-
-
 }
