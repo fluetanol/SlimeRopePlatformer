@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Profiling;
 using UnityEngine;
 
 
@@ -13,10 +14,12 @@ public class PlayerAccelNormalMove : NormalMoveInterface
     private Vector2 _direction;
     private Vector2 _velocity;
     private Vector2 _acceleration;
+    private Vector2 _slopeDirection;
 
     public PlayerAccelNormalMove(float maxSpeed, float NormalAccelTime, float StopAccelTime)
     {
         SetBasicValue(maxSpeed, NormalAccelTime, StopAccelTime);
+        _slopeDirection =Vector2.zero;
     }
 
     public Vector2 NormalMovingVector()
@@ -27,8 +30,7 @@ public class PlayerAccelNormalMove : NormalMoveInterface
         return _normalMove;
     }
 
-    public void SetDirectionVector(Vector2 direction)
-    {
+    public void SetDirectionVector(Vector2 direction){
         _direction = direction;
     }
 
@@ -42,7 +44,8 @@ public class PlayerAccelNormalMove : NormalMoveInterface
     private void NormalMoveAccel()
     {
         if (_direction.magnitude == 0) _acceleration = -_velocity.normalized * (MaxSpeed * Time.fixedDeltaTime / StopAccelTime);
-        else _acceleration = _direction * (MaxSpeed * Time.fixedDeltaTime / NormalAccelTime);
+        else _acceleration = (_direction) * (MaxSpeed * Time.fixedDeltaTime / NormalAccelTime);
+    
     }
 
     private void NormalMoveVelocity()
@@ -53,6 +56,16 @@ public class PlayerAccelNormalMove : NormalMoveInterface
 
     private void NormalMoveVector()
     {
-        _normalMove = _velocity * Time.fixedDeltaTime;
+        _normalMove = (_velocity + _slopeDirection) * Time.fixedDeltaTime;
     }
+
+    public void SetSlopeDirection(Vector2 slopeDirection)
+    {
+        _slopeDirection = slopeDirection;
+    }
+
+    public Vector2 GetSlopeDirection(){
+        return _slopeDirection;
+    }
+
 }

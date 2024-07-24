@@ -45,10 +45,20 @@ public class PlayerInput : MonoBehaviour, InputInterface{
         RaycastHit2D[] hits = new RaycastHit2D[10];
         int hitCount = 0;
         hitCount = CollisionCast(currentPosition, expectPosition,ref hits);
+        Physics2D.queriesStartInColliders = false;
 
-        if(hitCount==0)_fallingInterface.EnableFalling();
-        else CollsionHitCheck(hits,hitCount,ref expectPosition);
-        
+        if (hitCount==0){
+            RaycastHit2D hit = Physics2D.Raycast(currentPosition, Vector2.down, 1.02f);
+            if(hit.collider == null) _fallingInterface.EnableFalling();
+            else {
+                float angle = Vector2.SignedAngle(Vector2.up, hit.normal);
+                if (angle < 45 && angle > -45) SlopeDirection(hit.normal, ref expectPosition);
+            }
+        }
+        else {
+            
+            CollsionHitCheck(hits,hitCount,ref expectPosition);
+        }
         _finalMove = expectPosition;
     }
 
@@ -65,17 +75,22 @@ public class PlayerInput : MonoBehaviour, InputInterface{
             RaycastHit2D hit = hits[i];
             Vector2 normal = hit.normal;
             float angle = Vector2.SignedAngle(Vector2.up, normal);
-
+            
             if (angle < 45 && angle > -45){
+                SlopeDirection(normal, ref expectPosition);
                 _fallingInterface.DisableFalling();
-                expectPosition -= _gravityMove;
-            }
-            else if(angle > 45 && angle<135){
-                expectPosition -= _normalMove;
+                break;
             }
         }
     }
 
+    private void SlopeDirection(Vector2 normal, ref Vector2 expectPosition){
+        Vector2 projectVector = Vector3.ProjectOnPlane(_normalMove, normal);
+        Vector2 slopeDirection = projectVector - _normalMove;
+        expectPosition -= _gravityMove;
+        expectPosition += slopeDirection;
+        _normalMoveInterface.SetSlopeDirection(projectVector);
+    }
 
     //initialize GetComponent
     private void ComponentInitialize(){
@@ -97,72 +112,6 @@ public class PlayerInput : MonoBehaviour, InputInterface{
     public void OnMove(InputAction.CallbackContext ctx){
         Vector2 _direction = ctx.ReadValue<Vector2>();
         _normalMoveInterface.SetDirectionVector(_direction);
-    }
-}
-
-
-public class FallingGravityMoving : FallingInterface{
-    private bool _isFall = true;
-    private float _gravity;
-    private Vector2 _gravityMove;
-
-    public FallingGravityMoving(float gravity) =>  _gravity = gravity;
-    
-    public void EnableFalling() {
-        _isFall = true;
-    }
-    public void DisableFalling(){
-        _isFall = false;
-        _gravityMove = Vector2.zero;
-    }
-
-    public Vector2 FallingVector(){
-        if(_isFall){
-            Vector2 GravityAccel = Vector2.down * _gravity * Time.fixedDeltaTime;
-            _gravityMove += GravityAccel * Time.fixedDeltaTime;
-        }
-        return _gravityMove;
-    }
-}
-
-public class FallingResistenceMoving : FallingInterface{
-    public void DisableFalling()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void EnableFalling()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public Vector2 FallingVector()
-    {
-        return Vector2.down;
-    }
-}
-
-
-public class FallingClampMoving : FallingInterface
-{
-    public void DisableFalling()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void EnableFalling()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public Vector2 FallingVector()
-    {
-        /*
-        Vector2 resistVelocity = Vector2.down * Resistence;
-        _gravityMove += resistVelocity * (float)Math.Tanh(Gravity * Time.fixedDeltaTime / Resistence);
-        print(_gravityMove); */
-
-        return Vector2.down;
     }
 }
 

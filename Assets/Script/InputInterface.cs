@@ -9,6 +9,8 @@ public interface InputInterface
 public interface NormalMoveInterface
 {
     public Vector2 NormalMovingVector();
+    public void SetSlopeDirection(Vector2 slopeDirection);
+    public Vector2 GetSlopeDirection();
     public void SetDirectionVector(Vector2 direction);
 }
 
