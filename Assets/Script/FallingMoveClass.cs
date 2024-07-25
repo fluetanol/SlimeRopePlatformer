@@ -16,17 +16,14 @@ public class FallingGravityMoving : FallingInterface
     }
     public void DisableFalling()
     {
-        _isFall = false;
         _gravityMove = Vector2.zero;
+        FallingVector();
     }
 
     public Vector2 FallingVector()
     {
-        if (_isFall)
-        {
-            Vector2 GravityAccel = Vector2.down * _gravity * Time.fixedDeltaTime;
-            _gravityMove += GravityAccel * Time.fixedDeltaTime;
-        }
+        Vector2 GravityAccel = Vector2.down * _gravity * Time.fixedDeltaTime;
+        _gravityMove += GravityAccel * Time.fixedDeltaTime;
         return _gravityMove;
     }
 }
