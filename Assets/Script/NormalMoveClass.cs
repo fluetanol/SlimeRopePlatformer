@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Profiling;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.InputSystem.Interactions;
 
 
 public class PlayerAccelNormalMove : NormalMoveInterface
@@ -19,11 +21,10 @@ public class PlayerAccelNormalMove : NormalMoveInterface
     public PlayerAccelNormalMove(float maxSpeed, float NormalAccelTime, float StopAccelTime)
     {
         SetBasicValue(maxSpeed, NormalAccelTime, StopAccelTime);
-        _slopeDirection =Vector2.zero;
+        _slopeDirection = Vector2.up;
     }
 
-    public Vector2 NormalMovingVector()
-    {
+    public Vector2 NormalMovingVector(){
         NormalMoveAccel();
         NormalMoveVelocity();
         NormalMoveVector();
@@ -41,27 +42,35 @@ public class PlayerAccelNormalMove : NormalMoveInterface
         this.StopAccelTime = StopAccelTime;
     }
 
-    private void NormalMoveAccel()
-    {
-        if (_direction.magnitude == 0) _acceleration = -_velocity.normalized * (MaxSpeed * Time.fixedDeltaTime / StopAccelTime);
-        else _acceleration = (_direction) * (MaxSpeed * Time.fixedDeltaTime / NormalAccelTime);
+    private void NormalMoveAccel(){
+        _direction = Vector3.ProjectOnPlane(_direction, _slopeDirection).normalized;
+        if (_direction.magnitude == 0)_acceleration = -_velocity.normalized * (MaxSpeed * Time.fixedDeltaTime / StopAccelTime);
+        else _acceleration = _direction * (MaxSpeed * Time.fixedDeltaTime / NormalAccelTime);
     
     }
 
     private void NormalMoveVelocity()
     {
         _velocity += _acceleration;
-        _velocity = Vector2.ClampMagnitude(_velocity, MaxSpeed);
+        if(_direction.magnitude == 0 && _velocity.magnitude < _acceleration.magnitude) 
+            _velocity = Vector2.zero;
+
+        else _velocity = Vector2.ClampMagnitude(_velocity, MaxSpeed);
+
+    
     }
 
     private void NormalMoveVector()
     {
-        _normalMove = (_velocity + _slopeDirection) * Time.fixedDeltaTime;
+        _normalMove = _velocity * Time.fixedDeltaTime;
+
     }
 
     public void SetSlopeDirection(Vector2 slopeDirection)
     {
         _slopeDirection = slopeDirection;
+        _velocity = Vector3.ProjectOnPlane(_velocity, _slopeDirection);
+   
     }
 
     public Vector2 GetSlopeDirection(){

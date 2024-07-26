@@ -17,6 +17,7 @@ public interface NormalMoveInterface
 public interface FallingInterface
 {
     public Vector2 FallingVector();
+    public void SetGravityDirection(Vector2 gravityDirection);
     public void EnableFalling();
     public void DisableFalling();
 }

@@ -34,10 +34,9 @@ public class PlayerInput : MonoBehaviour, InputInterface{
     void FixedUpdate(){
          _normalMove = _normalMoveInterface.NormalMovingVector();
         _gravityMove = _fallingInterface.FallingVector();
-        //print(_gravityMove);
-        
+
         Vector2 currentPosition = _playerRigidbody.position;
-        Vector2 expectPosition = _playerRigidbody.position + _normalMove + _gravityMove + _jumpMove;
+        Vector2 expectPosition = _playerRigidbody.position + _normalMove + _gravityMove;
         Collision(currentPosition, expectPosition);
 
         _playerRigidbody.MovePosition(_finalMove);
@@ -46,25 +45,14 @@ public class PlayerInput : MonoBehaviour, InputInterface{
 
     private void Collision(Vector2 currentPosition, Vector2 expectPosition){
         RaycastHit2D[] hits = new RaycastHit2D[10];
-        int hitCount = 0;
-        hitCount = CollisionCast(currentPosition, expectPosition,ref hits);
+        int hitCount = CollisionCast(currentPosition, expectPosition,ref hits);
         Physics2D.queriesStartInColliders = false;
-
-        //print(currentPosition +" "+expectPosition);
         if (hitCount==0){
-            RaycastHit2D hit = Physics2D.Raycast(currentPosition, Vector2.down, 1.02f);
-            //if(hit.collider == null) 
+            print("air");
             _fallingInterface.EnableFalling();
-            //else {
-               // float angle = Vector2.SignedAngle(Vector2.up, hit.normal);
-                //print("hit!: "+ hit.point);
-              //  if (angle < 45 && angle > -45) 
-              //  SlopeDirection(hit.normal, ref currentPosition, ref expectPosition, ref hit);
-           // }
-           print("?");
         }
         else {
-            print("!");
+            print("collision");
             CollsionHitCheck(hits,hitCount,ref currentPosition, ref expectPosition);
         }
         _finalMove = expectPosition;
@@ -80,16 +68,18 @@ public class PlayerInput : MonoBehaviour, InputInterface{
     }
 
     private void CollsionHitCheck(RaycastHit2D[] hits, int hitCount,ref Vector2 currentPosition, ref Vector2 expectPosition){
+        print(hitCount);
         for (int i = 0; i < hitCount; i++){
             RaycastHit2D hit = hits[i];
             Vector2 normal = hit.normal;
             float angle = Vector2.SignedAngle(Vector2.up, normal);
-            
+        
             if (angle < 45 && angle > -45){
                 SlopeDirection(normal, ref currentPosition, ref expectPosition, ref hit);
                _fallingInterface.DisableFalling();
                 break;
             }
+        
         }
     }
 
@@ -97,12 +87,9 @@ public class PlayerInput : MonoBehaviour, InputInterface{
         Vector2 projectVector = Vector3.ProjectOnPlane(_normalMove, normal);
         Vector2 slopeDirection = projectVector - _normalMove;
         CapsuleCollider2D collider = GetComponent<CapsuleCollider2D>();
-        expectPosition.y = hit.point.y + collider.size.y/2;
-        //expectPosition -= _gravityMove;
-        
-        expectPosition += slopeDirection;
-        print(expectPosition);
-        _normalMoveInterface.SetSlopeDirection(projectVector);
+        expectPosition = hit.point + (normal * collider.size.x / 2) + Vector2.up * (collider.size.y / 2 - collider.size.x/2);
+        _fallingInterface.SetGravityDirection(-normal);
+        _normalMoveInterface.SetSlopeDirection(normal);
     }
 
     //initialize GetComponent
