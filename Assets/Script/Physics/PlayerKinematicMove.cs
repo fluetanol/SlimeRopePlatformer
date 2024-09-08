@@ -34,14 +34,13 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove
     };
     public PlayerComponent _playerComponent;
     
-    public float acceltime = 1f;
-    public float stoptime = 0.5f;
+
     //이동 방식 정의
     public Move _basicMove;
 
     new void Awake(){
         base.Awake();
-        _basicMove = new AccelMove(acceltime, stoptime);
+        _basicMove = new AccelMove(_playerPhysicsStats.acceltime, _playerPhysicsStats.stoptime);
         _playerInputState.GravityDirection = Vector2.down;
     }
 
@@ -64,6 +63,7 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove
 
         RaycastHit2D hit = Physics2D.CapsuleCast(currentPosition, size, colliderDirection,0, moveDelta, moveDelta.magnitude + 0.01f);
         if(hit.collider != null) {
+            print(hit.normal);
             _playerInputState.isGrounded = true;
             _basicMove.SetSlopeDirection(hit.normal);
             moveDelta = moveDelta.normalized * (hit.distance - 0.01f);

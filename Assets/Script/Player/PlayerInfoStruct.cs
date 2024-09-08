@@ -31,6 +31,8 @@ public struct PlayerPhysicsStats{
     public float FallingClamp;
     public int jumpCount;
     public int collisionCount;
+    public float acceltime;
+    public float stoptime;
 }
 
 

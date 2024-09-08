@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 
@@ -28,15 +29,14 @@ public class CameraMachine : MonoBehaviour
 
     void Awake(){
         screenWidth = Camera.main.orthographicSize * 2 * Camera.main.aspect;
-
     }
 
     void Update(){
-        if(_cameraState == ECameraState.Follow) CameraMove(_cameraMove);
-
-        CameraPlayerOver();
+        if(_cameraState == ECameraState.Follow) {
+            CameraMove(_cameraMove);
+            CameraPlayerOver();
+        }
     }
-
 
 
     void CameraMove(in ECameraMove cameraMoveMode){
@@ -54,19 +54,19 @@ public class CameraMachine : MonoBehaviour
         Vector2 pos = StageManager.Instance.GetCurentEndBoundaries().position;
         Vector2 pos2 = StageManager.Instance.GetCurrentStartBoundaries().position;
 
-        if (Target.position.x > pos.x){
-            StageManager.Instance.Addcluster();
-            Vector3 Startpos = transform.position;
-            Vector3 Endpos = Startpos + new Vector3(screenWidth, 0, 0);
-            StartCoroutine(CameraClusterMoving(0.2f, Startpos, Endpos));
-        }
-        
-        else if(Target.position.x < pos2.x){
-            StageManager.Instance.Minuscluster();
-            Vector3 Startpos = transform.position;
-            Vector3 Endpos = Startpos - new Vector3(screenWidth, 0, 0);
-            StartCoroutine(CameraClusterMoving(0.2f, Startpos, Endpos));
-        }
+            if (Target.position.x > pos.x){
+                StageManager.Instance.Addcluster();
+                Vector3 Startpos = transform.position;
+                Vector3 Endpos = Startpos + new Vector3(screenWidth, 0, 0);
+                StartCoroutine(CameraClusterMoving(0.2f, Startpos, Endpos));
+            }
+            
+            else if(Target.position.x < pos2.x){
+                StageManager.Instance.Minuscluster();
+                Vector3 Startpos = transform.position;
+                Vector3 Endpos = Startpos - new Vector3(screenWidth, 0, 0);
+                StartCoroutine(CameraClusterMoving(0.2f, Startpos, Endpos));
+            }
     }
 
     IEnumerator CameraClusterMoving(float duration, Vector3 Startpos, Vector3 Endpos){
@@ -83,20 +83,16 @@ public class CameraMachine : MonoBehaviour
         yield return null;
     }
 
-
-
-
     //어떤 바운더리를 넘어가는지 아닌지를 확인 하는 함수. 넘어가면 더 이상 카메라가 움직이지 않게 함 
     //*stage manager 싱글톤 사용 의존성이 조금 있긴 한데, 특정 함수에만 존재하는 의존성이라 무시해도 된다고 생각함
     //대신 클래스 응집도는 높혔음
-    bool IsCameraBoundaries(float CameraWidth, Vector2 expectPosition){
+    private bool IsCameraBoundaries(float CameraWidth, Vector2 expectPosition){
         Vector2 Startpos = StageManager.Instance.GetCurrentStartBoundaries().position;
         Vector2 Endpos = StageManager.Instance.GetCurentEndBoundaries().position;
 
         return Startpos.x + CameraWidth / 2 > expectPosition.x || 
                 Endpos.x - CameraWidth / 2 < expectPosition.x;
     }
-
 
     void OnDrawGizmos(){
         Gizmos.color = Color.red;
