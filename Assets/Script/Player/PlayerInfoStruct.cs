@@ -41,6 +41,6 @@ public struct PlayerPhysicsStats{
 public struct PlayerInputState{
     public Vector2 MoveDirection;
     public Vector2 GravityDirection;
-    public bool Jump;
+    public bool isJump;
     public bool isGrounded;
 }

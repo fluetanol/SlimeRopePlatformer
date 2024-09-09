@@ -1017,7 +1017,7 @@ Transform:
   m_GameObject: {fileID: 529948762}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 82.50033, y: -2.5684004, z: -10}
+  m_LocalPosition: {x: 82.51452, y: -2.5684004, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2171,7 +2171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a375d4d4e69cf44a8d5df93a4f0e18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isNotDestroyed: 0
+  isNotDestroyed: 1
 --- !u!70 &2060822711
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -2247,18 +2247,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerPhysicsStats:
-    HorizontalSpeed: 20
+    HorizontalSpeed: 19
     Gravity: 15
-    JumpForce: 0
+    JumpForce: 24
     FallingClamp: 0
     jumpCount: 0
     collisionCount: 3
-    acceltime: 0.5
+    acceltime: 0.3
     stoptime: 0.25
   _playerInputState:
     MoveDirection: {x: 0, y: 0}
     GravityDirection: {x: 0, y: -1}
-    Jump: 0
+    isJump: 0
     isGrounded: 0
   _playerComponent:
     CapsuleCollider2D: {fileID: 0}

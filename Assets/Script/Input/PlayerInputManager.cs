@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>{
 
-    private PlayerControls _playerControls;
+    public PlayerControls _playerControls;
 
     new void Awake(){
         base.Awake();
