@@ -224,7 +224,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 332170601}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
   m_Name: 
@@ -430,7 +430,7 @@ Transform:
   m_GameObject: {fileID: 529948762}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 85.302536, y: 4.901698, z: -10}
+  m_LocalPosition: {x: 87.18043, y: 4.901698, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14230,7 +14230,7 @@ Transform:
   m_GameObject: {fileID: 2060822707}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 79.0692, y: 2.4017, z: 0}
+  m_LocalPosition: {x: 83.9768, y: 2.4017, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14327,7 +14327,7 @@ MonoBehaviour:
   _playerPhysicsStats:
     HorizontalSpeed: 19
     Gravity: 15
-    JumpForce: 24
+    JumpForce: 20
     FallingClamp: 0
     jumpCount: 0
     collisionCount: 3

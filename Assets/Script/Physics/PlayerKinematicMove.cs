@@ -20,9 +20,15 @@ public partial class PlayerKinematicMove
         RaycastHit2D hit = Physics2D.CapsuleCast(currentPosition, size, colliderDirection, 0, moveDelta, moveDelta.magnitude + 0.01f);
         if (hit.collider != null)
         {
-            _playerInputState.isGrounded = true;
-            _playerInputState.isJump = false;
             _basicMove.SetSlopeDirection(hit.normal);
+            if (hit.normal == Vector2.down){
+                _basicMove.SetVerticalVelocity(Vector2.zero);
+                _playerInputState.isJump = false;
+            }
+            else {
+                _playerInputState.isGrounded = true;
+                _playerInputState.isJump = false;
+            }
             moveDelta = moveDelta.normalized * (hit.distance - 0.01f);
         }
         else
@@ -49,6 +55,11 @@ public partial class PlayerKinematicMove
 
             if (hit.collider != null)
             {
+                if(hit.normal == Vector2.left || hit.normal == Vector2.right){
+                    _basicMove.SetSlopeDirection(hit.normal);
+                    break;
+                }
+
                 _playerInputState.isGrounded = true;
                 _playerInputState.isJump = false;
                 _basicMove.SetSlopeDirection(hit.normal);
@@ -125,6 +136,6 @@ public partial class PlayerKinematicMove : KinematicPhysics, IInputMove
     //점프할 시
     public void OnJump(InputAction.CallbackContext ctx)
     {
-        _playerInputState.isJump = ctx.ReadValue<float>() == 1;
+        if(_playerInputState.isGrounded) _playerInputState.isJump = ctx.ReadValue<float>() == 1;
     }
 }
