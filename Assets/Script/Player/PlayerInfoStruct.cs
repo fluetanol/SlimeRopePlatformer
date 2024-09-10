@@ -12,6 +12,7 @@ public enum EPlayerElementalType{
 [Serializable]
 public struct PlayerComponent{
     public CapsuleCollider2D CapsuleCollider2D;
+    public Collider2D Collider2D;
     public Rigidbody2D Rigidbody2D;
 }
 
@@ -24,7 +25,7 @@ public struct PlayerState{
 
 //Player Physics Stats And Fixed Value
 [Serializable]
-public struct PlayerPhysicsStats{
+public struct PhysicsStats{
     public float HorizontalSpeed; 
     public float Gravity;
     public float JumpForce;
@@ -38,7 +39,7 @@ public struct PlayerPhysicsStats{
 
 //Player input state And Insertable Value
 [Serializable]
-public struct PlayerInputState{
+public struct InputState{
     public Vector2 MoveDirection;
     public Vector2 GravityDirection;
     public bool isJump;

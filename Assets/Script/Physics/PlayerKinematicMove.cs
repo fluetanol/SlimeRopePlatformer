@@ -1,12 +1,15 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public partial class PlayerKinematicMove
 {
-    private Vector2 Collision(Vector2 currentPosition, in Vector2 moveHorizontal, in Vector2 moveVertical)
+    private Vector2 Collision(Vector2 currentPosition, in Vector2 moveHorizontal, in Vector2 moveVertical, in Vector2 baseVector)
     {
         Vector2 moveDelta = VerticalCollision(currentPosition, moveVertical);
         moveDelta += HorizontalCollision(currentPosition + moveDelta, moveHorizontal);
+        moveDelta += baseVector;
+        print(baseVector);
         return moveDelta;
     }
 
@@ -28,11 +31,13 @@ public partial class PlayerKinematicMove
             else {
                 _playerInputState.isGrounded = true;
                 _playerInputState.isJump = false;
+                if(hit.transform.TryGetComponent(out ObstacleKinematicMove obstacle))  _basicMove.SetBaseHorizontalVelocity(obstacle.GetObstacleVelocity());
+                moveDelta = moveDelta.normalized * (hit.distance - 0.01f);
             }
-            moveDelta = moveDelta.normalized * (hit.distance - 0.01f);
         }
         else
         {
+            _basicMove.SetBaseHorizontalVelocity(Vector2.zero);
             _playerInputState.isGrounded = false;
             _basicMove.SetSlopeDirection(Vector2.up);
         }
@@ -82,8 +87,8 @@ public partial class PlayerKinematicMove
 
 public partial class PlayerKinematicMove : KinematicPhysics, IInputMove
 {
-    public PlayerPhysicsStats _playerPhysicsStats;
-    public PlayerInputState _playerInputState = new PlayerInputState()
+    public PhysicsStats _playerPhysicsStats;
+    public InputState _playerInputState = new InputState()
     {
         GravityDirection = Vector2.down,
         isGrounded = false,
@@ -106,8 +111,9 @@ public partial class PlayerKinematicMove : KinematicPhysics, IInputMove
         Vector2 currentPosition = _playerComponent.Rigidbody2D.position;
         Vector2 moveHorizontal = _basicMove.MoveHorizontalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
         Vector2 moveVertical = _basicMove.MoveVerticalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
+        Vector2 baseVector = _basicMove.MoveBaseHorizontalVelocity();
 
-        Vector2 moveDelta = Collision(currentPosition, moveHorizontal, moveVertical);
+        Vector2 moveDelta = Collision(currentPosition, moveHorizontal, moveVertical, baseVector);
         _playerComponent.Rigidbody2D.MovePosition(currentPosition + moveDelta);
     }
 
