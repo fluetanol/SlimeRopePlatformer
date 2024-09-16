@@ -15,21 +15,23 @@ public abstract class Move {
     public abstract Vector2 MoveHorizontalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState);
     public abstract Vector2 MoveVerticalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState);
     public abstract Vector2 MoveBaseHorizontalVelocity();
-
+    public abstract Vector2 MoveBaseVerticalVelocity();
+    
     public virtual void SetSlopeDirection(Vector2 slopeNormal) => _slopeNormal = slopeNormal;
     public virtual void SetBaseHorizontalVelocity(Vector2 baseHorizontalVelocity)=> _baseHorizontalVeclocity = baseHorizontalVelocity;
+    public virtual void SetBaseVerticalVelocity(Vector2 baseVerticalVelocity) => _baseVerticalVeclocity = baseVerticalVelocity;
     public virtual void SetHorizontalVelocity(Vector2 horizontalVelocity)=> _horizontalVelocity = horizontalVelocity;
     public virtual void SetVerticalVelocity(Vector2 verticalVelocity) => _verticalVelocity = verticalVelocity;
     
 }
 
 [Serializable]
-public sealed class ObstacleMove : Move
+public sealed class PlatformMove : Move
 {
     private List<Vector2> l;
     private int index = 1;
 
-    public ObstacleMove(List<Vector2> list){
+    public PlatformMove(List<Vector2> list){
         l = list;
     }
 
@@ -37,7 +39,6 @@ public sealed class ObstacleMove : Move
     {
         float speed = playerPhysicsStats.HorizontalSpeed;
         _direction = l[index] - l[(l.Count + (index - 1)) % l.Count];
-        
         _horizontalVelocity = _direction.normalized * speed * Time.fixedDeltaTime;
         return _horizontalVelocity;
     
@@ -48,6 +49,8 @@ public sealed class ObstacleMove : Move
     }
 
     public override Vector2 MoveBaseHorizontalVelocity() => _horizontalVelocity;
+
+    public override Vector2 MoveBaseVerticalVelocity() => Vector2.zero;
 
     public void UpdateDirection(Vector2 currentPos){
         _direction = l[index] - currentPos;
@@ -93,6 +96,10 @@ public sealed class AccelMove : Move{
         return _baseHorizontalVeclocity;
     }
 
+    public override Vector2 MoveBaseVerticalVelocity(){
+        return _baseVerticalVeclocity;
+    }
+
 
     public override Vector2 MoveVerticalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState){
         float jumpForce = playerPhysicsStats.JumpForce;
@@ -113,7 +120,7 @@ public sealed class AccelMove : Move{
 
     private void CalculateAccelVector(in float HorizontalSpeed, in Vector2 inputDirection){
         _direction = Vector3.ProjectOnPlane(inputDirection, _slopeNormal).normalized;
-
+        Debug.Log(_direction);
         //정지
         if (_direction.magnitude == 0) _acceleration = -_horizontalVelocity.normalized * (HorizontalSpeed * Time.fixedDeltaTime / _stopAccelTime);
         //이동
@@ -134,6 +141,11 @@ public sealed class AccelMove : Move{
     private void CalculateHorizontalVelocityVector(){
         _horizontalVelocity = _velocity * Time.fixedDeltaTime;
     }
+
+    public override void SetHorizontalVelocity(Vector2 horizontalVelocity){
+        _velocity = horizontalVelocity;
+    }
+
 
     private void CalculateJumpVelocity(in float jumpForce, in bool isJumping){
         if(isJumping) _jumpVelocity = Vector2.up * jumpForce * Time.fixedDeltaTime;

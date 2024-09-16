@@ -4,13 +4,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>{
 
-    public PlayerControls _playerControls;
+    public static PlayerControls _playerControls;
 
     new void Awake(){
         base.Awake();
         PlayerInputInitialize();
     }
-    
+
     void OnEnable() => _playerControls.Enable();
     void OnDisable() => _playerControls.Disable();
 
@@ -20,12 +20,14 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>{
         _playerControls.Enable();
     }
 
-    public void SetMoveAction(Action<InputAction.CallbackContext> action){
-        _playerControls.Locomotion.Move.started += action;
-        _playerControls.Locomotion.Move.canceled += action;
+    public static void SetMoveAction(IInputMove inputMove){
+        _playerControls.Locomotion.Move.started += inputMove.OnMove;
+        _playerControls.Locomotion.Move.canceled += inputMove.OnMove;
+        _playerControls.Locomotion.Jump.started += inputMove.OnJump;
     }   
 
-    public void SetJumpAction(Action<InputAction.CallbackContext> action){
-        _playerControls.Locomotion.Jump.started += action;
+    public static void SetClickAction(IInputMouse inputMouse){
+        _playerControls.Locomotion.Click.started += inputMouse.OnClick;
+    
     }
 }
