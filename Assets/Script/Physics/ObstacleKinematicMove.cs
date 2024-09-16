@@ -42,8 +42,8 @@ public class PlatformKinematicMove : KinematicPhysics
         if(hit.collider != null){
             Vector2 horizontal = new Vector2(moveDelta.x,0);
             Vector2 vertical = new Vector2(0, moveDelta.y);
-            hit.transform.GetComponent<PlayerKinematicMove>()._basicMove.SetBaseHorizontalVelocity(horizontal);
-            hit.transform.GetComponent<PlayerKinematicMove>()._basicMove.SetBaseVerticalVelocity(vertical);
+            hit.transform.GetComponent<PlayerKinematicMove>().IsetMoveVelocity.SetBaseHorizontalVelocity(horizontal);
+            hit.transform.GetComponent<PlayerKinematicMove>().IsetMoveVelocity.SetBaseVerticalVelocity(vertical);
         }
 
         return base.HorizontalCollision(currentPosition, moveDelta);

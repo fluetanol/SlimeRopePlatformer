@@ -1,7 +1,28 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+/*
+    1. 플레이어의 충돌 방식         -> 수평, 수직 충돌 + 트리거 특수 판정
+    2. 움직이는 플랫폼의 충돌 방식  -> 수평, 수직 충돌
+    3. 특수 오브젝트의 충돌 방식    -> 트리거 또는 수평 수직이 의미없는 충돌
+*/
+
+
+public interface IOverlapCollision{
+    public Vector2 OverlapCollision(Vector2 currentPosition);
+}
+
+public interface ISeperateCollision{
+    public Vector2 VerticalCollision(Vector2 currentPosition, Vector2 moveDelta);
+    public Vector2 HorizontalCollision(Vector2 currentPosition, Vector2 moveDelta);
+}
+
+public interface IMixCollision{
+    public Vector2 Collision(Vector2 currentPosition, Vector2 moveDelta);
+}
+
+
 
 public partial class PlayerKinematicMove
 {
@@ -36,13 +57,13 @@ public partial class PlayerKinematicMove
                 delta = Vector2.right * Math.Abs((hit[0].bounds.center+hit[0].bounds.extents).x - currentPosition.x);
             }
             else if(platformAngle <= currentAngle && 180 - platformAngle >= currentAngle){
-                _basicMove.SetBaseHorizontalVelocity(hit[0].GetComponent<PlatformKinematicMove>().GetPlatformVelocity());
+                IsetMoveVelocity.SetBaseHorizontalVelocity(hit[0].GetComponent<PlatformKinematicMove>().GetPlatformVelocity());
             }
             else if(180 - platformAngle <= currentAngle){
                 delta = Vector2.left * Math.Abs((hit[0].bounds.center - hit[0].bounds.extents).x - currentPosition.x);
             }
         }else{
-            _basicMove.SetBaseHorizontalVelocity(Vector2.zero);
+            IsetMoveVelocity.SetBaseHorizontalVelocity(Vector2.zero);
         }
         return delta;
     
@@ -56,9 +77,9 @@ public partial class PlayerKinematicMove
 
         RaycastHit2D hit = Physics2D.CapsuleCast(currentPosition, size, colliderDirection, 0, moveDelta, moveDelta.magnitude + 0.01f);
         if (hit.collider != null){
-            _basicMove.SetSlopeDirection(hit.normal);
+            IsetSlopeDirection.SetSlopeDirection(hit.normal);
             float angle = Vector2.Angle(hit.normal, Vector2.up);
-            if (angle > 90)  _basicMove.SetVerticalVelocity(Vector2.down);
+            if (angle > 90)  IsetMoveVelocity.SetVerticalVelocity(Vector2.down);
             else{
                 _playerInputState.isGrounded = true;
                 moveDelta = moveDelta.normalized * (hit.distance - 0.01f);
@@ -67,7 +88,7 @@ public partial class PlayerKinematicMove
         }
         else{
             _playerInputState.isGrounded = false;
-            _basicMove.SetSlopeDirection(Vector2.up);
+            IsetSlopeDirection.SetSlopeDirection(Vector2.up);
         }
 
         return moveDelta;
@@ -90,7 +111,7 @@ public partial class PlayerKinematicMove
                 float angle = Vector2.Angle(hit.normal, Vector2.up);
 
                 if(angle > 50 && angle <= 90){
-                    _basicMove.SetHorizontalVelocity(Vector2.zero);
+                    IsetMoveVelocity.SetHorizontalVelocity(Vector2.zero);
                     delta += moveDelta.normalized * (hit.distance - 0.01f);
                     break;
                 }
@@ -98,7 +119,7 @@ public partial class PlayerKinematicMove
                 else if(angle <= 50){
                     _playerInputState.isGrounded = true;
                     _playerInputState.isJump = false;
-                    _basicMove.SetSlopeDirection(hit.normal);
+                    IsetSlopeDirection.SetSlopeDirection(hit.normal);
                     moveDelta = Vector3.ProjectOnPlane(moveDelta, hit.normal).normalized * moveDelta.magnitude;
                     delta += moveDelta.normalized * (hit.distance - 0.01f);
                     moveDelta -= delta;
@@ -116,8 +137,11 @@ public partial class PlayerKinematicMove
 }
 
 
+
+//플레이어의 물리적 움직임과 관련된 모든 데이터들이 담겨있는 곳
 public partial class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
 {
+    //플레이어 물리적 움직임에 필요한 데이터 구조체
     public PhysicsStats _playerPhysicsStats;
     public InputState _playerInputState = new InputState(){
         GravityDirection = Vector2.down,
@@ -125,22 +149,28 @@ public partial class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputM
     };
     public PlayerComponent _playerComponent;
 
-
     //이동 방식 정의
-    public AccelMove _basicMove;
+    public Move Move;
+    public ISetMoveVelocity IsetMoveVelocity;
+    public ISetSlopeDirection IsetSlopeDirection;
+    
 
     new void Awake() {
         base.Awake();
-        _basicMove = new AccelMove(_playerPhysicsStats.acceltime, _playerPhysicsStats.stoptime);
+        AccelMove accelMove = new AccelMove(_playerPhysicsStats.acceltime, _playerPhysicsStats.stoptime);
+        Move = accelMove;
+        IsetMoveVelocity = accelMove;
+        IsetSlopeDirection = accelMove;
         _playerInputState.GravityDirection = Vector2.down;
     }
 
     void FixedUpdate() {
         Vector2 currentPosition = _playerComponent.Rigidbody2D.position;
-        Vector2 moveHorizontal = _basicMove.MoveHorizontalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
-        Vector2 moveVertical = _basicMove.MoveVerticalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
-        Vector2 horizontalVector = _basicMove.MoveBaseHorizontalVelocity();
-        Vector2 VerticalVector = _basicMove.MoveBaseVerticalVelocity(); 
+        Vector2 moveHorizontal = Move.MoveHorizontalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
+        Vector2 moveVertical = Move.MoveVerticalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
+        Vector2 horizontalVector = Move.MoveBaseHorizontalVelocity();
+        Vector2 VerticalVector = Move.MoveBaseVerticalVelocity(); 
+
         Vector2 baseVector = horizontalVector + VerticalVector;
         Vector2 moveDelta = Collision(currentPosition, moveHorizontal, moveVertical, baseVector);
         _playerComponent.Rigidbody2D.MovePosition(currentPosition + moveDelta);
