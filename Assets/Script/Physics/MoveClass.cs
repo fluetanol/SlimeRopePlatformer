@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public interface ISetMoveVelocity{
@@ -13,14 +12,13 @@ public interface ISetSlopeDirection{
     public void SetSlopeDirection(Vector2 slopeNormal);
 }
 
+[Serializable]
 public abstract class Move {
     protected Vector2 _baseHorizontalVeclocity = Vector2.zero; //V0
     protected Vector2 _baseVerticalVeclocity = Vector2.zero; //V0
-    protected Vector2 _slopeNormal = Vector2.up;  //Land normal vector    
     protected Vector2 _direction = Vector2.zero; //Move direction
-    
-    [SerializeField] protected Vector2 _horizontalVelocity;
-    [SerializeField] protected Vector2 _verticalVelocity;
+    protected Vector2 _horizontalVelocity;
+    protected Vector2 _verticalVelocity;
 
     public abstract Vector2 MoveHorizontalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState);
     public abstract Vector2 MoveVerticalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState);

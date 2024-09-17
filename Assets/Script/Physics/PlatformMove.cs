@@ -21,8 +21,7 @@ public sealed class PlatformMove : Move
         return _horizontalVelocity;
     }
 
-    public override Vector2 MoveVerticalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState)
-    {
+    public override Vector2 MoveVerticalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState){
         return Vector2.zero;
     }
     public override Vector2 MoveBaseHorizontalVelocity() => _horizontalVelocity;
