@@ -3,9 +3,10 @@ using UnityEngine;
 
 //Moving by acceleration
 [Serializable]
-public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection
+public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection, ISetMoveBoolean
 {
     public bool isAccelerating = true;
+    public bool isGravity = true;
     public float _normalAccelTime = 1; //Acclereation time
     public float _stopAccelTime = 0.5f;   //Stop acceleration time
     private float accelMagnitde = 1;
@@ -14,6 +15,7 @@ public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection
     private Vector2 _acceleration = Vector2.zero; //Acceleration
     private Vector2 _jumpVelocity = Vector2.zero; //Jump velocity vector
     private Vector2 _gravityVector = Vector2.zero; //Gravity
+    
 
     public PlayerAccelMove(float normalAccelTime, float stopAccelTime){
         _normalAccelTime = normalAccelTime;
@@ -42,14 +44,14 @@ public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection
         bool isJumping = playerInputState.isJump;
 
         CalculateJumpVelocity(jumpForce, isJumping);
-        CalculateVerticalVector(gravity, gravityDirection, isGrounded, 0.1f);
+        if(isGravity) CalculateVerticalVector(gravity, gravityDirection, isGrounded, 0.1f);
         return _verticalVelocity;
     }
 
 
     private void CalculateAccelVector(in float HorizontalSpeed, in Vector2 inputDirection){
         _direction = Vector3.ProjectOnPlane(inputDirection, _slopeNormal).normalized;
-        Debug.Log(_direction);
+
         //정지
         if (_direction.magnitude == 0) _acceleration = -_horizontalVelocity.normalized * (HorizontalSpeed * Time.fixedDeltaTime / _stopAccelTime);
         //이동
@@ -93,4 +95,10 @@ public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection
 
     public void SetSlopeDirection(Vector2 slopeNormal) => _slopeNormal = slopeNormal;
 
+    public void SetGravityState(bool isGravity) => this.isGravity = isGravity;
+    
+    
+
+    public void SetAccelState(bool isAccel) => this.isAccelerating = isAccel;
+    
 }

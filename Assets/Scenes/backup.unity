@@ -430,7 +430,7 @@ Transform:
   m_GameObject: {fileID: 529948762}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 125.92437, y: 2.796901, z: -10}
+  m_LocalPosition: {x: 57.587753, y: 15.187903, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -580,8 +580,8 @@ Transform:
   m_GameObject: {fileID: 624480410}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 114.5031, y: 1.6225, z: 0}
-  m_LocalScale: {x: 10, y: 5, z: 1}
+  m_LocalPosition: {x: 121, y: 1, z: 0}
+  m_LocalScale: {x: 10, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -723,7 +723,7 @@ Transform:
   m_GameObject: {fileID: 1180630184}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 124.5031, y: 1.6225, z: 0}
+  m_LocalPosition: {x: 111.0564, y: 9.3543, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14117,7 +14117,7 @@ Transform:
   m_GameObject: {fileID: 1264335939}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 104.5031, y: 1.6225, z: 0}
+  m_LocalPosition: {x: 121, y: 1, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14193,7 +14193,7 @@ Transform:
   m_GameObject: {fileID: 1502535665}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 114.1979, y: 7.4344997, z: 0}
+  m_LocalPosition: {x: 105, y: 7.4344997, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14427,8 +14427,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2060822707}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 125.9244, y: 0.29690003, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 117.679794, y: 12.6879, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14540,17 +14540,12 @@ MonoBehaviour:
     CapsuleCollider2D: {fileID: 0}
     Collider2D: {fileID: 0}
     Rigidbody2D: {fileID: 0}
-  _basicMove:
-    _horizontalVelocity: {x: 0, y: 0}
-    _verticalVelocity: {x: 0, y: 0}
-    isAccelerating: 0
-    _normalAccelTime: 0
-    _stopAccelTime: 0
-    _velocity: {x: 0, y: 0}
-    _acceleration: {x: 0, y: 0}
-    _jumpVelocity: {x: 0, y: 0}
-    _gravityVector: {x: 0, y: 0}
-    accelMagnitde: 0
+  moveHorizontal: {x: 0, y: 0}
+  moveVertical: {x: 0, y: 0}
+  basehorizontal: {x: 0, y: 0}
+  baseVertical: {x: 0, y: 0}
+  baseVector: {x: 0, y: 0}
+  moveDelta: {x: 0, y: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -14558,11 +14553,11 @@ SceneRoots:
   - {fileID: 529948766}
   - {fileID: 780813363}
   - {fileID: 85099902}
-  - {fileID: 2060822709}
   - {fileID: 1902185755}
   - {fileID: 1472844320}
   - {fileID: 1840332965}
   - {fileID: 1264335940}
   - {fileID: 1180630185}
   - {fileID: 1502535666}
+  - {fileID: 2060822709}
   - {fileID: 624480413}

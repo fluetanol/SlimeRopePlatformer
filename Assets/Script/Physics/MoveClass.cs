@@ -12,6 +12,11 @@ public interface ISetSlopeDirection{
     public void SetSlopeDirection(Vector2 slopeNormal);
 }
 
+public interface ISetMoveBoolean{
+    public void SetGravityState(bool isGravity);
+    public void SetAccelState(bool isAccel);
+}
+
 [Serializable]
 public abstract class Move {
     protected Vector2 _baseHorizontalVeclocity = Vector2.zero; //V0

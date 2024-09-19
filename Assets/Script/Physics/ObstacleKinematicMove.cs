@@ -24,35 +24,57 @@ public class PlatformKinematicMove : KinematicPhysics
     {
         Vector2 currentPosition = _PlatformComponent.Rigidbody2D.position;  
         _PlatformMove.UpdateDirection(currentPosition);
-        Vector2 delta = _PlatformMove.MoveHorizontalFixedUpdate(ref _PlatformPhysicsStats, ref _PlatformInputState);
-        HorizontalCollision(currentPosition, delta);
+
+        Vector2 horizontal = _PlatformMove.MoveHorizontalFixedUpdate(ref _PlatformPhysicsStats, ref _PlatformInputState);
+        Vector2 vertical = _PlatformMove.MoveVerticalFixedUpdate(ref _PlatformPhysicsStats, ref _PlatformInputState);
+
+        Vector2 delta = VerticalCollision(currentPosition, vertical);
+        delta += HorizontalCollision(currentPosition + delta, horizontal);
         _PlatformComponent.Rigidbody2D.MovePosition(currentPosition + delta);
     }
 
 
     protected override Vector2 HorizontalCollision(Vector2 currentPosition, Vector2 moveDelta)
     {
-        BoxCollider2D collider = _PlatformComponent.Collider2D as BoxCollider2D;
-        Vector2 size = collider.size;
-        size = new Vector2(size.x * transform.localScale.x + 0.1f, size.y * transform.localScale.y + 0.1f);
-
-        Physics2D.queriesStartInColliders = false;
+        MakeCollisionInfo(out BoxCollider2D collider, out Vector2 size);
         RaycastHit2D hit = Physics2D.BoxCast(currentPosition, size, 0, moveDelta.normalized, moveDelta.magnitude, LayerMask.GetMask("Player"));
         
         if(hit.collider != null){
-            Vector2 horizontal = new Vector2(moveDelta.x,0);
-            Vector2 vertical = new Vector2(0, moveDelta.y);
+            Vector2 horizontal = moveDelta;
             hit.transform.GetComponent<PlayerKinematicMove>().IsetMoveVelocity.SetBaseHorizontalVelocity(horizontal);
-            hit.transform.GetComponent<PlayerKinematicMove>().IsetMoveVelocity.SetBaseVerticalVelocity(vertical);
         }
 
         return base.HorizontalCollision(currentPosition, moveDelta);
     }
 
+    protected override Vector2 VerticalCollision(Vector2 currentPosition, Vector2 moveDelta)
+    {
+        MakeCollisionInfo(out BoxCollider2D collider, out Vector2 size);
+        RaycastHit2D hit = Physics2D.BoxCast(currentPosition, size, 0, moveDelta.normalized, moveDelta.magnitude, LayerMask.GetMask("Player"));
+        if (hit.collider != null)
+        {
+            Vector2 vertical = moveDelta;
+            hit.transform.GetComponent<PlayerKinematicMove>().IsetMoveVelocity.SetBaseVerticalVelocity(vertical);
+        }
+
+        return base.VerticalCollision(currentPosition, moveDelta);
+    }
+
+    private void MakeCollisionInfo(out BoxCollider2D collider, out Vector2 size){
+        collider = _PlatformComponent.Collider2D as BoxCollider2D;
+        size = collider.size;
+        size = new Vector2(size.x * transform.localScale.x + 0.1f, size.y * transform.localScale.y + 0.1f);
+        Physics2D.queriesStartInColliders = false;
+    }
 
 
     public Vector2 GetPlatformVelocity(){
         return _PlatformMove.MoveBaseHorizontalVelocity();
+    }
+
+    public Vector2 GetVerticalPlatformVelocity()
+    {
+        return _PlatformMove.MoveBaseVerticalVelocity();
     }
 
     private void OnDrawGizmos() {
