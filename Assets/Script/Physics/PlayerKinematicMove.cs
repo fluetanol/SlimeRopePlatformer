@@ -1,8 +1,5 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
-
 /*
     1. 플레이어의 충돌 방식         -> 수평, 수직 충돌 + 트리거 특수 판정
     2. 움직이는 플랫폼의 충돌 방식  -> 수평, 수직 충돌
@@ -29,44 +26,39 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
         isGrounded = false,
     };
     public PlayerComponent _playerComponent;
-
-    //이동 방식 정의
-    public Move Move;
-    public IOverlapCollision IOverlapCollision;
-    public ISeperateCollision ISeperateCollision;
-    public ISetMoveVelocity IsetMoveVelocity;
-    public ISetMoveBoolean IsetMoveBoolean;
-    public ISetSlopeDirection IsetSlopeDirection;
-
     [SerializeField] private Vector2 moveHorizontal, moveVertical, basehorizontal, baseVertical, baseVector, moveDelta;
 
-
-    new void Awake() {
-        base.Awake();
+    protected override void InterfaceInitialize()
+    {
         PlayerAccelMove accelMove = new PlayerAccelMove(_playerPhysicsStats.acceltime, _playerPhysicsStats.stoptime);
         Move = accelMove;
         IsetMoveVelocity = accelMove;
         IsetSlopeDirection = accelMove;
         IsetMoveBoolean = accelMove;
 
-        PlayerKinematicCollision playerCollision = new PlayerKinematicCollision(_playerComponent.CapsuleCollider2D, IsetSlopeDirection, IsetMoveVelocity, this, IsetMoveBoolean);
+        PlayerKinematicCollision playerCollision = new PlayerKinematicCollision(_playerComponent.CapsuleCollider2D, IsetSlopeDirection, IsetMoveVelocity, this);
         IOverlapCollision = playerCollision;
         ISeperateCollision = playerCollision;
+        IStepRaycast = playerCollision;
+    }
+
+    protected override void SettingInitialize()
+    {
         _playerInputState.GravityDirection = Vector2.down;
     }
 
+
     void FixedUpdate() {
         Vector2 currentPosition = _playerComponent.Rigidbody2D.position;
-        VelocityFixedUpdate(ref moveHorizontal, ref moveVertical, ref basehorizontal, ref baseVertical);
-        baseVector = (basehorizontal + baseVertical);
-        currentPosition += baseVector;
-
         moveDelta = IOverlapCollision.OverlapCollision(currentPosition);
+
+        VelocityFixedUpdate(ref moveHorizontal, ref moveVertical, ref basehorizontal, ref baseVertical);
         moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, moveVertical);
         moveDelta += ISeperateCollision.HorizontalCollision(currentPosition + moveDelta, moveHorizontal);
+        baseVector = basehorizontal + baseVertical;
+        moveDelta += baseVector;
 
         _playerComponent.Rigidbody2D.MovePosition(currentPosition + moveDelta);
-       // _playerComponent.Rigidbody2D.position = currentPosition + moveDelta;
     }
 
     private void VelocityFixedUpdate(ref Vector2 moveHorizontal, ref Vector2 moveVertical, ref Vector2 basehorizontal, ref Vector2 baseVertical){
@@ -77,7 +69,7 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
 
     }
 
-    protected override void PlayerComponentInitialize() {
+    protected override void ComponentInitialize() {
         _playerComponent.CapsuleCollider2D =
         _playerComponent.CapsuleCollider2D == null ? GetComponent<CapsuleCollider2D>() : _playerComponent.CapsuleCollider2D;
 
@@ -99,7 +91,7 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
     public void OnJump(InputAction.CallbackContext ctx){
         if(_playerInputState.isGrounded) {
             _playerInputState.isJump = ctx.ReadValue<float>() == 1;
-        IsetMoveBoolean.SetGravityState(true);
+            IsetMoveBoolean.SetGravityState(true);
         }
     }
 
