@@ -39,7 +39,13 @@ public class PlatformCollision : ISeperateCollision
 
 
 
-public class PlatformKinematicMove : KinematicPhysics
+public interface IPlatformVelocity{
+    Vector2 GetHorizontalPlatformVelocity();
+    Vector2 GetVerticalPlatformVelocity();
+}
+
+
+public class PlatformKinematicMove : KinematicPhysics, IPlatformVelocity
 {
     [SerializeField] private List<Transform> l_pathTransform;
     [SerializeField] private PhysicsStats _PlatformPhysicsStats;
@@ -91,7 +97,7 @@ public class PlatformKinematicMove : KinematicPhysics
         }
     }
 
-    public Vector2 GetPlatformVelocity() => Move.MoveBaseHorizontalVelocity();
+    public Vector2 GetHorizontalPlatformVelocity() => Move.MoveBaseHorizontalVelocity();
     
     public Vector2 GetVerticalPlatformVelocity() => Move.MoveBaseVerticalVelocity();
 

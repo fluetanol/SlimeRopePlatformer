@@ -14,6 +14,7 @@ public struct PlayerComponent{
     public CapsuleCollider2D CapsuleCollider2D;
     public Collider2D Collider2D;
     public Rigidbody2D Rigidbody2D;
+    public SpriteRenderer SpriteRenderer;
 }
 
 

@@ -19,6 +19,8 @@ public sealed class PlatformMove : Move, IPlatformDirection
         _direction = (l[index] - l[(l.Count + (index - 1)) % l.Count]).normalized;
     }
 
+
+
     public override Vector2 MoveHorizontalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState){
         speed = playerPhysicsStats.HorizontalSpeed;
         _horizontalVelocity = new Vector2(_direction.x,0) * speed * Time.fixedDeltaTime;
@@ -37,7 +39,6 @@ public sealed class PlatformMove : Move, IPlatformDirection
 
     public Vector2 UpdateDirection(Vector2 currentPos){
         float magnitude = (l[index] - currentPos).magnitude;
-        Debug.Log(magnitude);
         if (magnitude < 0.2f) {
             Vector2 delta = l[index] - currentPos;
             index = ++index % l.Count;

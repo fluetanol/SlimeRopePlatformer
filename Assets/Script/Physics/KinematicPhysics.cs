@@ -21,7 +21,7 @@ public abstract class KinematicPhysics : MonoBehaviour
         InterfaceInitialize();
     
     }
-
+    
     void OnEnable(){
         SetInputAction();
     }

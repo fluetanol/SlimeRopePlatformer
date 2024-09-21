@@ -1,7 +1,6 @@
 using System;
 using UnityEngine.InputSystem;
 
-
 public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>{
 
     public static PlayerControls _playerControls;

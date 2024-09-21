@@ -42,9 +42,22 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
         IStepRaycast = playerCollision;
     }
 
-    protected override void SettingInitialize()
-    {
+    protected override void SettingInitialize(){
         _playerInputState.GravityDirection = Vector2.down;
+    }
+
+    protected override void ComponentInitialize()
+    {
+        _playerComponent.CapsuleCollider2D =
+        _playerComponent.CapsuleCollider2D == null ? GetComponent<CapsuleCollider2D>() : _playerComponent.CapsuleCollider2D;
+
+        _playerComponent.Rigidbody2D =
+        _playerComponent.Rigidbody2D == null ? GetComponent<Rigidbody2D>() : _playerComponent.Rigidbody2D;
+
+        _playerComponent.SpriteRenderer =
+        _playerComponent.SpriteRenderer == null ? GetComponentInChildren<SpriteRenderer>(true) : _playerComponent.SpriteRenderer;
+
+     
     }
 
 
@@ -69,14 +82,6 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
 
     }
 
-    protected override void ComponentInitialize() {
-        _playerComponent.CapsuleCollider2D =
-        _playerComponent.CapsuleCollider2D == null ? GetComponent<CapsuleCollider2D>() : _playerComponent.CapsuleCollider2D;
-
-        _playerComponent.Rigidbody2D =
-        _playerComponent.Rigidbody2D == null ? GetComponent<Rigidbody2D>() : _playerComponent.Rigidbody2D;
-    }
-
     protected override void SetInputAction(){
         PlayerInputManager.SetClickAction(this);
         PlayerInputManager.SetMoveAction(this);
@@ -85,6 +90,13 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
     //움직일 시
     public void OnMove(InputAction.CallbackContext ctx){
         _playerInputState.MoveDirection = ctx.ReadValue<Vector2>();
+        if(_playerInputState.MoveDirection == Vector2.left){
+            _playerComponent.SpriteRenderer.flipX = true;
+        }
+        else if(_playerInputState.MoveDirection == Vector2.right){
+            _playerComponent.SpriteRenderer.flipX = false;
+        }
+    
     }
 
     //점프할 시
