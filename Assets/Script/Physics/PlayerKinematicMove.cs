@@ -11,7 +11,7 @@ using UnityEngine.InputSystem;
 
 
 //플레이어의 물리적 움직임과 관련된 컴포넌트들을 관리하고 결합시키고 제어하는 시스템
-public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
+public class PlayerKinematicMove : KinematicPhysics
 {
     private IGetPlayerData _playerData;
     private IGetPlayerStateData _playerStateData;
@@ -47,6 +47,8 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
 
 
     void FixedUpdate() {
+        PlayerPhysicsStateUpdate();
+
         Vector2 currentPosition = _playerData.GetPlayerComponent().Rigidbody2D.position;
 
         PreCollisionFixedUpdate(currentPosition);
@@ -57,11 +59,28 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
         _playerData.GetPlayerComponent().Rigidbody2D.MovePosition(currentPosition + moveDelta);
     }
 
+    private void PlayerPhysicsStateUpdate(){
+        if (_playerStateData.GetPlayerStateMachine()._playerMoveState == EPlayerMoveState.Jump){
+            IsetMoveState.SetGravityState(true);
+            IsetMoveState.SetGroundState(false);
+            IsetMoveState.SetJumpState(true);
+        }
+        else{
+            IsetMoveState.SetJumpState(false);
+        }
+
+        if (_playerStateData.GetPlayerStateMachine()._playerLandState == EPlayerLandState.Land)
+            IsetMoveState.SetGroundState(true);
+
+        else if (_playerStateData.GetPlayerStateMachine()._playerLandState == EPlayerLandState.Air)
+            IsetMoveState.SetGroundState(false);
+    }
+
+
     private void PreCollisionFixedUpdate(Vector2 currentPosition){
         moveDelta = IOverlapCollision.OverlapCollision(currentPosition);
         EOverlapType overlapType = IcollisionResult.OverlapCollisionType();
         Collider2D overlapHit = IcollisionResult.GetOverlapHit();
-
 
         switch(overlapType){
             case EOverlapType.Overlap:
@@ -87,11 +106,12 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
         Vector2 horizontalNormal = IcollisionResult.GetHorizontalNormal();
 
         if(verticalNormal != horizontalNormal && horizontalNormal != Vector2.zero){
-            print(verticalNormal + " " + horizontalNormal);
+            
             moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, Vector2.down);
 
         }
-
+        print(verticalNormal+" "+horizontalNormal);
+        
 
         ECollisionType verticalCollisionType = IcollisionResult.VerticalCollisionType();
         ECollisionType horizontalCollisionType = IcollisionResult.HorizontalCollisionType();
@@ -107,21 +127,15 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
                 _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
                 IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
-                IsetMoveState.SetGroundState(true);
-                IsetMoveState.SetJumpState(false);
                 break;
             case ECollisionType.Wall:
-                _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
-                IsetMoveState.SetJumpState(false);
-
                 IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
                 IsetMoveVelocity.SetVerticalVelocity(Vector2.zero);
                 break;
 
             case ECollisionType.Air:
                 _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Air;
-                IsetMoveState.SetGroundState(false);
                 IsetSlopeDirection.SetSlopeDirection(Vector2.up);
                 break;
         }
@@ -133,8 +147,6 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
             case ECollisionType.Ground:
                 _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
-                IsetMoveState.SetGroundState(true);
-                IsetMoveState.SetJumpState(false);
                 IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetHorizontalNormal());
                 break;
             case ECollisionType.Wall:
@@ -160,38 +172,6 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
         moveVertical = Move.MoveVerticalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
         basehorizontal = Move.MoveBaseHorizontalVelocity();
         baseVertical = Move.MoveBaseVerticalVelocity(); 
-    }
-
-    protected override void SetInputAction(){
-        PlayerInputManager.SetClickAction(this);
-        PlayerInputManager.SetMoveAction(this);
-    }
-
-    //움직일 시
-    public void OnMove(InputAction.CallbackContext ctx){
-        PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
-        _playerData.GetPlayerInputState().MoveDirection = ctx.ReadValue<Vector2>();
-        if (stateMachine._playerMoveState != EPlayerMoveState.Jump){
-            stateMachine._playerMoveState = EPlayerMoveState.Run;
-        }
-    }
-
-    //점프할 시
-    public void OnJump(InputAction.CallbackContext ctx){
-        PlayerStateMachine stateMachine  = _playerStateData.GetPlayerStateMachine();
-        if (stateMachine._playerLandState == EPlayerLandState.Land) {
-            if(ctx.ReadValue<float>() == 1){
-                stateMachine._playerMoveState = EPlayerMoveState.Jump;
-                IsetMoveState.SetJumpState(true);
-                IsetMoveState.SetGravityState(true);
-            }
-
-        }
-    }
-
-    //마우스 클릭 시
-    public void OnClick(InputAction.CallbackContext ctx){
-        Debug.Log("Click");
     }
 
 
