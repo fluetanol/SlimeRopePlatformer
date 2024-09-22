@@ -1,15 +1,17 @@
 using UnityEngine;
 
+
 public class SpriteAnimationController : MonoBehaviour
 {
-    private SpriteRenderer spriteRenderer;
-    private Animator animator;
+    private IGetPlayerData _playerData;
+    private IGetPlayerStateData _playerStateData;
+
     [SerializeField] private Transform _handleObject;
-    [SerializeField] private PlayerKinematicMove playerKinematicMove;
 
     void Awake(){
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+        _playerData = PlayerData.IPlayerData;
+        _playerStateData = PlayerData.IPlayerStateData;
+    
     }
 
     void Update(){
@@ -18,30 +20,32 @@ public class SpriteAnimationController : MonoBehaviour
         flip();
     }
 
-
     void JumpState(){
-        if (PlayerKinematicMove._playerInputState.isJump) animator.SetBool("isJump", true);
-        else animator.SetBool("isJump", false);
+        Animator animator = _playerData.GetPlayerComponent().Animator;
+        if (_playerStateData.GetPlayerStateMachine()._playerMoveState == EPlayerMoveState.Jump) animator.SetBool("IsJump", true);
+        else animator.SetBool("IsJump", false);
     }
 
     void GroundState(){
-        if (PlayerKinematicMove._playerInputState.isGrounded) animator.SetBool("isGrounded", true);
-        else animator.SetBool("isGrounded", false);
+        Animator animator = _playerData.GetPlayerComponent().Animator;
+        if (_playerStateData.GetPlayerStateMachine()._playerLandState == EPlayerLandState.Land) animator.SetBool("IsGrounded", true);
+        else animator.SetBool("IsGrounded", false);
     }
 
     void flip(){
-        if(PlayerKinematicMove._playerInputState.MoveDirection == Vector2.left) {
+        SpriteRenderer spriteRenderer = _playerData.GetPlayerComponent().SpriteRenderer;
+        ref InputState playerInputState = ref _playerData.GetPlayerInputState();
+
+        if(playerInputState.MoveDirection == Vector2.left) {
             spriteRenderer.flipX = true;
             _handleObject.localPosition = new Vector3(-1f, 0, 0);
             _handleObject.up = Vector2.left;
 
         }
-        else if(PlayerKinematicMove._playerInputState.MoveDirection == Vector2.right){
+        else if(playerInputState.MoveDirection == Vector2.right){
             spriteRenderer.flipX = false;
             _handleObject.localPosition = new Vector3(1f, 0, 0);
             _handleObject.up = Vector2.right;
-
-
         }
     }
 

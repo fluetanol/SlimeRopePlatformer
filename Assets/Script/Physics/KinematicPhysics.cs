@@ -6,7 +6,7 @@ public abstract class KinematicPhysics : MonoBehaviour
     public IOverlapCollision IOverlapCollision;
     public ISeperateCollision ISeperateCollision;
     public ISetMoveVelocity IsetMoveVelocity;
-    public ISetMoveBoolean IsetMoveBoolean;
+    public ISetMoveState IsetMoveState;
     public ISetSlopeDirection IsetSlopeDirection;
     public IStepCollision IStepRaycast;
     public IPlatformDirection IplatformDirection;

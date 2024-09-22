@@ -3,61 +3,59 @@ using UnityEngine;
 
 //Moving by acceleration
 [Serializable]
-public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection, ISetMoveBoolean
+public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection, ISetMoveState
 {
     public bool isAccelerating = true;
     public bool isGravity = true;
+    public bool isGrounded = false;
+    public bool isJumping = false;
     public float _normalAccelTime = 1; //Acclereation time
     public float _stopAccelTime = 0.5f;   //Stop acceleration time
     private float accelMagnitde = 1;
     private Vector2 _velocity = Vector2.zero; //Velocity vector
-    private Vector2 _slopeNormal = Vector2.up;  //Land normal vector    
     private Vector2 _acceleration = Vector2.zero; //Acceleration
     private Vector2 _jumpVelocity = Vector2.zero; //Jump velocity vector
-    private Vector2 _gravityVector = Vector2.zero; //Gravity
-    
+    private Vector2 _gravityVelocity = Vector2.zero; //Gravity
+    private Vector2 _slopeNormal = Vector2.up;  //Land normal vector    
 
-    public PlayerAccelMove(float normalAccelTime, float stopAccelTime){
-        _normalAccelTime = normalAccelTime;
-        _stopAccelTime = stopAccelTime;
-    }
+    // Parent Override Method //
 
     public override Vector2 MoveHorizontalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState)
     {
+        _stopAccelTime = playerPhysicsStats.stoptime;
+        _normalAccelTime = playerPhysicsStats.acceltime;
         float HorizontalSpeed = playerPhysicsStats.HorizontalSpeed;
         Vector2 inputDirection = playerInputState.MoveDirection;
+
         CalculateAccelVector(in HorizontalSpeed, in inputDirection);
         CalculateHorizontalVelocityVector(in HorizontalSpeed);
         return _horizontalVelocity;
+    }
+    
+    public override Vector2 MoveVerticalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState){
+        float jumpForce = playerPhysicsStats.JumpForce;
+        float gravity = playerPhysicsStats.Gravity;
+        float fallClamp = playerPhysicsStats.FallingClamp;
+        Vector2 gravityDirection = playerInputState.GravityDirection;
+
+        CalculateJumpVelocity(jumpForce);
+        if(isGravity) CalculateVerticalVector(gravity, gravityDirection, 0.1f);
+        return _verticalVelocity;
     }
 
     public override Vector2 MoveBaseHorizontalVelocity() => _baseHorizontalVeclocity;
 
     public override Vector2 MoveBaseVerticalVelocity() => _baseVerticalVeclocity;
-    
-
-    public override Vector2 MoveVerticalFixedUpdate(ref PhysicsStats playerPhysicsStats, ref InputState playerInputState){
-        float jumpForce = playerPhysicsStats.JumpForce;
-        float gravity = playerPhysicsStats.Gravity;
-        Vector2 gravityDirection = playerInputState.GravityDirection;
-        bool isGrounded = playerInputState.isGrounded;
-        bool isJumping = playerInputState.isJump;
-
-        CalculateJumpVelocity(jumpForce, isJumping);
-        if(isGravity) CalculateVerticalVector(gravity, gravityDirection, isGrounded, 0.1f);
-        return _verticalVelocity;
-    }
 
 
+    //수평 가속도 벡터 계산
     private void CalculateAccelVector(in float HorizontalSpeed, in Vector2 inputDirection){
         _direction = Vector3.ProjectOnPlane(inputDirection, _slopeNormal).normalized;
-
-        //정지
         if (_direction.magnitude == 0) _acceleration = -_horizontalVelocity.normalized * (HorizontalSpeed * Time.fixedDeltaTime / _stopAccelTime);
-        //이동
         else _acceleration = _direction * (HorizontalSpeed * Time.fixedDeltaTime / _normalAccelTime);
     }
 
+    //수평 속도 벡터 계산
     private void CalculateHorizontalVelocityVector(in float HorizontalSpeed){
         _velocity = Vector3.ProjectOnPlane(_velocity, _slopeNormal).normalized * _velocity.magnitude;
         _velocity += _acceleration;
@@ -68,37 +66,43 @@ public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection
         _horizontalVelocity = _velocity * Time.fixedDeltaTime;
     }
 
-    private void CalculateJumpVelocity(in float jumpForce, in bool isJumping){
+    //점프 속도 벡터 계산
+    private void CalculateJumpVelocity(in float jumpForce){
         if (isJumping) _jumpVelocity = Vector2.up * jumpForce * Time.fixedDeltaTime;
         else _jumpVelocity = Vector2.zero;
     }
 
-    private void CalculateVerticalVector(in float gravity, in Vector2 gravityDirection, in bool isGrounded, in float fallClamp){
+    //수직 속도 벡터 계산
+    private void CalculateVerticalVector(in float gravity, in Vector2 gravityDirection, in float fallClamp){
         if (isGrounded){
-            _gravityVector = Vector2.zero;
+            _gravityVelocity = Vector2.zero;
             accelMagnitde = 1;
         }
         Vector2 GravityAccel = accelMagnitde * gravityDirection * gravity * Time.fixedDeltaTime;
         accelMagnitde += 0.1f;
-        _gravityVector += GravityAccel * Time.fixedDeltaTime;
-        _verticalVelocity = _jumpVelocity + _gravityVector;
+        _gravityVelocity += GravityAccel * Time.fixedDeltaTime;
+        _verticalVelocity = _jumpVelocity + _gravityVelocity;
     }
 
 
+    // interface implementation //
+
     public void SetBaseHorizontalVelocity(Vector2 baseHorizontalVelocity) => _baseHorizontalVeclocity = baseHorizontalVelocity;
 
-    public void SetHorizontalVelocity(Vector2 horizontalVelocity) => _velocity = horizontalVelocity;
+    public void SetHorizontalVelocity(Vector2 horizontalVelocity) => this._velocity = horizontalVelocity;
 
-    public void SetBaseVerticalVelocity(Vector2 baseVerticalVelocity) => _baseVerticalVeclocity = baseVerticalVelocity;
+    public void SetBaseVerticalVelocity(Vector2 baseVerticalVelocity) => this._baseVerticalVeclocity = baseVerticalVelocity;
 
-    public void SetVerticalVelocity(Vector2 verticalVelocity) => _verticalVelocity = verticalVelocity;
+    public void SetVerticalVelocity(Vector2 verticalVelocity) => this._verticalVelocity = verticalVelocity;
 
-    public void SetSlopeDirection(Vector2 slopeNormal) => _slopeNormal = slopeNormal;
+    public void SetSlopeDirection(Vector2 slopeNormal) => this._slopeNormal = slopeNormal;
 
     public void SetGravityState(bool isGravity) => this.isGravity = isGravity;
     
-    
-
     public void SetAccelState(bool isAccel) => this.isAccelerating = isAccel;
-    
+
+    public void SetGroundState(bool isGround) => this.isGrounded = isGround;
+
+    public void SetJumpState(bool isJump) => this.isJumping = isJump;
+
 }

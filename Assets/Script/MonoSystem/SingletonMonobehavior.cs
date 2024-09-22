@@ -12,9 +12,7 @@ public class SingletonMonobehavior<T> : MonoBehaviour where T : MonoBehaviour
        }
     }
     
-
     [SerializeField] private bool isNotDestroyed;
-
 
     protected void Awake()
     {

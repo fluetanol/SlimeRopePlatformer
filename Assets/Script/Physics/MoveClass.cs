@@ -12,9 +12,11 @@ public interface ISetSlopeDirection{
     public void SetSlopeDirection(Vector2 slopeNormal);
 }
 
-public interface ISetMoveBoolean{
+public interface ISetMoveState{
     public void SetGravityState(bool isGravity);
     public void SetAccelState(bool isAccel);
+    public void SetGroundState(bool isGround);
+    public void SetJumpState(bool isJump);
 }
 
 [Serializable]

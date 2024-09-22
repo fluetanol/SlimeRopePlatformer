@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,102 +10,141 @@ using UnityEngine.InputSystem;
 */
 
 
-public interface IPhysicsInfo{
-    public bool IsGrounded();
-    public bool IsJump();
-    public void SetGroundState(bool isGrounded);
-    public void SetJumpState(bool isJump);
-    public int GetCollisionCount();
-}
-
-
-//플레이어의 물리적 움직임과 관련된 모든 데이터들이 담겨있는 곳
-public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IPhysicsInfo
+//플레이어의 물리적 움직임과 관련된 컴포넌트들을 관리하고 결합시키고 제어하는 시스템
+public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
 {
-    //플레이어 물리적 움직임에 필요한 데이터 구조체
-    public PhysicsStats _playerPhysicsStats;
-    public static InputState _playerInputState;
-    public PlayerComponent _playerComponent;
+    private IGetPlayerData _playerData;
+    private IGetPlayerStateData _playerStateData;
+    private ICollisionResult IcollisionResult;
+
+    public event Action OnStateChange;
 
     //just for debugging....
     [SerializeField] private Vector2 moveHorizontal, moveVertical, basehorizontal, baseVertical, baseVector, moveDelta, slopeDirection;
     [SerializeField] private bool isGrounded;
     [SerializeField] private bool isJump;
     
-
     protected override void InterfaceInitialize()
     {
-        PlayerAccelMove accelMove = new PlayerAccelMove(_playerPhysicsStats.acceltime, _playerPhysicsStats.stoptime);
+        _playerData = PlayerData.IPlayerData;
+        _playerStateData = PlayerData.IPlayerStateData;
+
+        CapsuleCollider2D CapsuleCollider2D = _playerData.GetPlayerComponent().CapsuleCollider2D;
+
+        PlayerAccelMove accelMove = new PlayerAccelMove();
         Move = accelMove;
         IsetMoveVelocity = accelMove;
         IsetSlopeDirection = accelMove;
-        IsetMoveBoolean = accelMove;
+        IsetMoveState = accelMove;
 
-        PlayerKinematicCollision playerCollision = new PlayerKinematicCollision(_playerComponent.CapsuleCollider2D, IsetSlopeDirection, IsetMoveVelocity, this);
+        PlayerKinematicCollision playerCollision = new PlayerKinematicCollision(CapsuleCollider2D);
         IOverlapCollision = playerCollision;
         ISeperateCollision = playerCollision;
-        IStepRaycast = playerCollision;
-    }
-
-    protected override void SettingInitialize(){
-        _playerInputState = new InputState(){
-            GravityDirection = Vector2.down,
-            isGrounded = false,
-        };
-        _playerInputState.GravityDirection = Vector2.down;
-    }
-
-    protected override void ComponentInitialize()
-    {
-        _playerComponent.CapsuleCollider2D =
-        _playerComponent.CapsuleCollider2D == null ? GetComponent<CapsuleCollider2D>() : _playerComponent.CapsuleCollider2D;
-
-        _playerComponent.Rigidbody2D =
-        _playerComponent.Rigidbody2D == null ? GetComponent<Rigidbody2D>() : _playerComponent.Rigidbody2D;
-
-        _playerComponent.SpriteRenderer =
-        _playerComponent.SpriteRenderer == null ? GetComponentInChildren<SpriteRenderer>(true) : _playerComponent.SpriteRenderer;
-
-     
+        IcollisionResult = playerCollision;
+        
+        //IStepRaycast = playerCollision;
     }
 
 
     void FixedUpdate() {
-        Vector2 currentPosition = _playerComponent.Rigidbody2D.position;
-        PhysicsPreCollision(currentPosition);
-        VelocityFixedUpdate(ref moveHorizontal, ref moveVertical, ref basehorizontal, ref baseVertical);
-        PhysicsPostCollision(currentPosition);
-        PhysicsPostVelocity();
+        Vector2 currentPosition = _playerData.GetPlayerComponent().Rigidbody2D.position;
 
-        _playerComponent.Rigidbody2D.MovePosition(currentPosition + moveDelta);
-        forDebugUpdate();
+        PreCollisionFixedUpdate(currentPosition);
+        PreVelocityFixedUpdate(ref moveHorizontal, ref moveVertical, ref basehorizontal, ref baseVertical);
+        PostCollisionFixedUpdate(currentPosition);
+        PostVelocityFixedUpdate();
+
+        _playerData.GetPlayerComponent().Rigidbody2D.MovePosition(currentPosition + moveDelta);
     }
 
-
-
-
-    private void PhysicsPreCollision(Vector2 currentPosition){
+    private void PreCollisionFixedUpdate(Vector2 currentPosition){
         moveDelta = IOverlapCollision.OverlapCollision(currentPosition);
+        EOverlapType overlapType = IcollisionResult.OverlapCollisionType();
+        Collider2D overlapHit = IcollisionResult.GetOverlapHit();
+
+        switch(overlapType){
+            case EOverlapType.Overlap:
+                IPlatformVelocity iPlatformVelocity = overlapHit.GetComponent<IPlatformVelocity>();
+                Vector2 horizontalVelocity = iPlatformVelocity.GetHorizontalPlatformVelocity();
+                Vector2 verticalVelocity = iPlatformVelocity.GetVerticalPlatformVelocity();
+                IsetMoveVelocity.SetBaseHorizontalVelocity(horizontalVelocity);
+                IsetMoveVelocity.SetBaseVerticalVelocity(verticalVelocity);
+                break;
+
+            case EOverlapType.Seperate:
+                IsetMoveVelocity.SetBaseHorizontalVelocity(Vector2.zero);
+                IsetMoveVelocity.SetBaseVerticalVelocity(Vector2.zero);
+                break;
+        }
     }
 
-    private void PhysicsPostCollision(Vector2 currentPosition){
+    private void PostCollisionFixedUpdate(Vector2 currentPosition){
         moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, moveVertical);
         moveDelta += ISeperateCollision.HorizontalCollision(currentPosition + moveDelta, moveHorizontal);
+
+        ECollisionType verticalCollisionType = IcollisionResult.VerticalCollisionType();
+        ECollisionType horizontalCollisionType = IcollisionResult.HorizontalCollisionType();
+
+        verticalCollisionAction(verticalCollisionType);
+        horizontalCollisionAction(horizontalCollisionType);
     }
 
-    private void PhysicsPostVelocity(){
+    private void verticalCollisionAction(ECollisionType verticalCollisionType){
+        switch (verticalCollisionType)
+        {
+            case ECollisionType.Ground:
+                _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
+                _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
+                IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetVerticalHit().normal);
+                IsetMoveState.SetGroundState(true);
+                IsetMoveState.SetJumpState(false);
+                break;
+            case ECollisionType.Wall:
+                _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
+                _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
+                IsetMoveState.SetJumpState(false);
+
+                IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetVerticalHit().normal);
+                IsetMoveVelocity.SetVerticalVelocity(Vector2.zero);
+                break;
+
+            case ECollisionType.Air:
+                _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Air;
+                IsetMoveState.SetGroundState(false);
+                IsetSlopeDirection.SetSlopeDirection(Vector2.up);
+                break;
+        }
+    }
+
+    private void horizontalCollisionAction(ECollisionType horizontalCollisionType){
+        switch (horizontalCollisionType)
+        {
+            case ECollisionType.Ground:
+                _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
+                _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
+                IsetMoveState.SetGroundState(true);
+                IsetMoveState.SetJumpState(false);
+                IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetHorizontalHit().normal);
+                break;
+            case ECollisionType.Wall:
+                IsetMoveVelocity.SetHorizontalVelocity(Vector2.zero);
+                break;
+            case ECollisionType.Air:
+                break;
+        }
+    }
+
+    
+    private void PostVelocityFixedUpdate(){
         baseVector = basehorizontal + baseVertical;
         moveDelta += baseVector;
     }
 
-   
 
-    private void forDebugUpdate(){
-        isGrounded = IsGrounded();
-        isJump = IsJump();
-    }
+    private void PreVelocityFixedUpdate(ref Vector2 moveHorizontal, ref Vector2 moveVertical, ref Vector2 basehorizontal, ref Vector2 baseVertical){
+        ref PhysicsStats _playerPhysicsStats = ref _playerData.GetPlayerPhysicsStats();
+        ref InputState _playerInputState = ref _playerData.GetPlayerInputState();
 
-    private void VelocityFixedUpdate(ref Vector2 moveHorizontal, ref Vector2 moveVertical, ref Vector2 basehorizontal, ref Vector2 baseVertical){
         moveHorizontal = Move.MoveHorizontalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
         moveVertical = Move.MoveVerticalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
         basehorizontal = Move.MoveBaseHorizontalVelocity();
@@ -117,30 +158,31 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
 
     //움직일 시
     public void OnMove(InputAction.CallbackContext ctx){
-        _playerInputState.MoveDirection = ctx.ReadValue<Vector2>();
+        PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
+        _playerData.GetPlayerInputState().MoveDirection = ctx.ReadValue<Vector2>();
+        if (stateMachine._playerMoveState != EPlayerMoveState.Jump){
+            stateMachine._playerMoveState = EPlayerMoveState.Run;
+        }
     }
 
     //점프할 시
     public void OnJump(InputAction.CallbackContext ctx){
-        if(_playerInputState.isGrounded) {
-            _playerInputState.isJump = ctx.ReadValue<float>() == 1;
-            IsetMoveBoolean.SetGravityState(true);
+        PlayerStateMachine stateMachine  = _playerStateData.GetPlayerStateMachine();
+        if (stateMachine._playerLandState == EPlayerLandState.Land) {
+            if(ctx.ReadValue<float>() == 1){
+                stateMachine._playerMoveState = EPlayerMoveState.Jump;
+                IsetMoveState.SetJumpState(true);
+                IsetMoveState.SetGravityState(true);
+            }
+
         }
     }
 
+    //마우스 클릭 시
     public void OnClick(InputAction.CallbackContext ctx){
         Debug.Log("Click");
     }
 
-    public bool IsGrounded() => _playerInputState.isGrounded;
-
-    public bool IsJump() => _playerInputState.isJump;
-
-    public void SetGroundState(bool isGrounded) => _playerInputState.isGrounded = isGrounded;
-
-    public void SetJumpState(bool isJump) => _playerInputState.isJump = isJump;
-
-    public int GetCollisionCount() => _playerPhysicsStats.collisionCount;
 
     void OnDrawGizmos()
     {

@@ -15,6 +15,7 @@ public struct PlayerComponent{
     public Collider2D Collider2D;
     public Rigidbody2D Rigidbody2D;
     public SpriteRenderer SpriteRenderer;
+    public Animator Animator;
 }
 
 
@@ -43,6 +44,5 @@ public struct PhysicsStats{
 public struct InputState{
     public Vector2 MoveDirection;
     public Vector2 GravityDirection;
-    public bool isJump;
-    public bool isGrounded;
+    public bool IsJump;
 }

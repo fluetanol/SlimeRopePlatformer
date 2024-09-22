@@ -648,13 +648,13 @@ MonoBehaviour:
   _PlatformInputState:
     MoveDirection: {x: 0, y: 0}
     GravityDirection: {x: 0, y: 0}
-    isJump: 0
-    isGrounded: 0
+    IsJump: 0
   _PlatformComponent:
     CapsuleCollider2D: {fileID: 0}
     Collider2D: {fileID: 0}
     Rigidbody2D: {fileID: 0}
     SpriteRenderer: {fileID: 0}
+    Animator: {fileID: 0}
   horizontal: {x: 0, y: 0}
   vertical: {x: 0, y: 0}
 --- !u!50 &624480415
@@ -857,7 +857,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _handleObject: {fileID: 332170602}
-  playerKinematicMove: {fileID: 2060822713}
 --- !u!1 &1180630184
 GameObject:
   m_ObjectHideFlags: 0
@@ -14603,6 +14602,7 @@ GameObject:
   - component: {fileID: 2060822714}
   - component: {fileID: 2060822710}
   - component: {fileID: 2060822713}
+  - component: {fileID: 2060822715}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -14679,26 +14679,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isCollisionContainMe: 0
-  _playerPhysicsStats:
-    HorizontalSpeed: 15
-    Gravity: 12
-    JumpForce: 15
-    FallingClamp: 10
-    jumpCount: 1
-    collisionCount: 3
-    acceltime: 0.15
-    stoptime: 0.5
-  _playerComponent:
-    CapsuleCollider2D: {fileID: 0}
-    Collider2D: {fileID: 0}
-    Rigidbody2D: {fileID: 0}
-    SpriteRenderer: {fileID: 0}
-  _stepDownRaycastInfo:
-    heightOffset: 0.1
-    forwardOffset: 0
-    horizontalDistance: 0.5
-    position: {x: 0, y: 0}
-    direction: {x: 0, y: 0}
   moveHorizontal: {x: 0, y: 0}
   moveVertical: {x: 0, y: 0}
   basehorizontal: {x: 0, y: 0}
@@ -14743,6 +14723,42 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1.4, y: 1.4}
   m_Direction: 0
+--- !u!114 &2060822715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060822707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b689bb294a47504cb3f6213f53ab204, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerPhysicsStats:
+    HorizontalSpeed: 15
+    Gravity: 10
+    JumpForce: 10
+    FallingClamp: 0
+    jumpCount: 1
+    collisionCount: 3
+    acceltime: 0.25
+    stoptime: 0.25
+  _playerInputState:
+    MoveDirection: {x: 0, y: 0}
+    GravityDirection: {x: 0, y: 0}
+    IsJump: 0
+  _playerComponent:
+    CapsuleCollider2D: {fileID: 0}
+    Collider2D: {fileID: 0}
+    Rigidbody2D: {fileID: 0}
+    SpriteRenderer: {fileID: 0}
+    Animator: {fileID: 0}
+  _stateMachine:
+    _playerMoveState: 0
+    _playerLandState: 2
+    _playerBehaviourState: 0
+    _playerElementalType: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
