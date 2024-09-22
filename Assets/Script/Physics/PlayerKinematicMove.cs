@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 /*
@@ -21,12 +22,14 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
 {
     //플레이어 물리적 움직임에 필요한 데이터 구조체
     public PhysicsStats _playerPhysicsStats;
-    public InputState _playerInputState = new InputState(){
-        GravityDirection = Vector2.down,
-        isGrounded = false,
-    };
+    public static InputState _playerInputState;
     public PlayerComponent _playerComponent;
-    [SerializeField] private Vector2 moveHorizontal, moveVertical, basehorizontal, baseVertical, baseVector, moveDelta;
+
+    //just for debugging....
+    [SerializeField] private Vector2 moveHorizontal, moveVertical, basehorizontal, baseVertical, baseVector, moveDelta, slopeDirection;
+    [SerializeField] private bool isGrounded;
+    [SerializeField] private bool isJump;
+    
 
     protected override void InterfaceInitialize()
     {
@@ -43,6 +46,10 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
     }
 
     protected override void SettingInitialize(){
+        _playerInputState = new InputState(){
+            GravityDirection = Vector2.down,
+            isGrounded = false,
+        };
         _playerInputState.GravityDirection = Vector2.down;
     }
 
@@ -63,15 +70,37 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
 
     void FixedUpdate() {
         Vector2 currentPosition = _playerComponent.Rigidbody2D.position;
-        moveDelta = IOverlapCollision.OverlapCollision(currentPosition);
-
+        PhysicsPreCollision(currentPosition);
         VelocityFixedUpdate(ref moveHorizontal, ref moveVertical, ref basehorizontal, ref baseVertical);
-        moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, moveVertical);
-        moveDelta += ISeperateCollision.HorizontalCollision(currentPosition + moveDelta, moveHorizontal);
-        baseVector = basehorizontal + baseVertical;
-        moveDelta += baseVector;
+        PhysicsPostCollision(currentPosition);
+        PhysicsPostVelocity();
 
         _playerComponent.Rigidbody2D.MovePosition(currentPosition + moveDelta);
+        forDebugUpdate();
+    }
+
+
+
+
+    private void PhysicsPreCollision(Vector2 currentPosition){
+        moveDelta = IOverlapCollision.OverlapCollision(currentPosition);
+    }
+
+    private void PhysicsPostCollision(Vector2 currentPosition){
+        moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, moveVertical);
+        moveDelta += ISeperateCollision.HorizontalCollision(currentPosition + moveDelta, moveHorizontal);
+    }
+
+    private void PhysicsPostVelocity(){
+        baseVector = basehorizontal + baseVertical;
+        moveDelta += baseVector;
+    }
+
+   
+
+    private void forDebugUpdate(){
+        isGrounded = IsGrounded();
+        isJump = IsJump();
     }
 
     private void VelocityFixedUpdate(ref Vector2 moveHorizontal, ref Vector2 moveVertical, ref Vector2 basehorizontal, ref Vector2 baseVertical){
@@ -79,7 +108,6 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
         moveVertical = Move.MoveVerticalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
         basehorizontal = Move.MoveBaseHorizontalVelocity();
         baseVertical = Move.MoveBaseVerticalVelocity(); 
-
     }
 
     protected override void SetInputAction(){
@@ -90,13 +118,6 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
     //움직일 시
     public void OnMove(InputAction.CallbackContext ctx){
         _playerInputState.MoveDirection = ctx.ReadValue<Vector2>();
-        if(_playerInputState.MoveDirection == Vector2.left){
-            _playerComponent.SpriteRenderer.flipX = true;
-        }
-        else if(_playerInputState.MoveDirection == Vector2.right){
-            _playerComponent.SpriteRenderer.flipX = false;
-        }
-    
     }
 
     //점프할 시
@@ -121,5 +142,9 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse, IP
 
     public int GetCollisionCount() => _playerPhysicsStats.collisionCount;
 
-
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 0.7f);
+    }
 }

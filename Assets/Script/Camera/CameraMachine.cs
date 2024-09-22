@@ -18,7 +18,8 @@ public class CameraMachine : MonoBehaviour
     public ECameraMove _cameraMove = ECameraMove.Smooth;
     public Transform Target;
 
-    [SerializeField] private float yOffset = 2;
+    [SerializeField][Range(10, -10)] private float yOffset = 2;
+    [SerializeField] [Range(0, 15)] private float cameraOrthoGrahicSize = 10;
     [SerializeField] private float _cameraLerpSpeed = 0.5f;
     [SerializeField] private float _cameraSpeed = 0.5f;
     private float screenWidth;
@@ -32,6 +33,7 @@ public class CameraMachine : MonoBehaviour
             CameraMove(_cameraMove);
             CameraPlayerOver();
         }
+        Camera.main.orthographicSize = cameraOrthoGrahicSize;
     }
 
 
@@ -90,10 +92,6 @@ public class CameraMachine : MonoBehaviour
                 Endpos.x - CameraWidth / 2 < expectPosition.x;
     }
 
-    void OnDrawGizmos(){
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(Target.transform.position, 1);
-    }
 
 
 }

@@ -93,7 +93,7 @@ public class PlatformKinematicMove : KinematicPhysics, IPlatformVelocity
         delta = IplatformDirection.UpdateDirection(_PlatformComponent.Rigidbody2D.position);
 
         if(delta!=Vector2.zero){
-            print("delta : " + delta + " next frame direction change!");
+//            print("delta : " + delta + " next frame direction change!");
         }
     }
 
