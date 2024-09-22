@@ -21,7 +21,7 @@ public class CameraMachine : MonoBehaviour
     [SerializeField][Range(10, -10)] private float yOffset = 2;
     [SerializeField] [Range(0, 15)] private float cameraOrthoGrahicSize = 10;
     [SerializeField] private float _cameraLerpSpeed = 0.5f;
-    [SerializeField] private float _cameraSpeed = 0.5f;
+    //[SerializeField] private float _cameraSpeed = 0.5f;
     private float screenWidth;
 
     void Awake(){

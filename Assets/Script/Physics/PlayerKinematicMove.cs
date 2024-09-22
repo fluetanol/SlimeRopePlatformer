@@ -26,8 +26,8 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
     
     protected override void InterfaceInitialize()
     {
-        _playerData = PlayerData.IPlayerData;
-        _playerStateData = PlayerData.IPlayerStateData;
+        _playerData = GetComponent<PlayerData>();
+        _playerStateData = GetComponent<PlayerData>();
 
         CapsuleCollider2D CapsuleCollider2D = _playerData.GetPlayerComponent().CapsuleCollider2D;
 
@@ -62,6 +62,7 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
         EOverlapType overlapType = IcollisionResult.OverlapCollisionType();
         Collider2D overlapHit = IcollisionResult.GetOverlapHit();
 
+
         switch(overlapType){
             case EOverlapType.Overlap:
                 IPlatformVelocity iPlatformVelocity = overlapHit.GetComponent<IPlatformVelocity>();
@@ -82,6 +83,16 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
         moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, moveVertical);
         moveDelta += ISeperateCollision.HorizontalCollision(currentPosition + moveDelta, moveHorizontal);
 
+        Vector2 verticalNormal = IcollisionResult.GetVerticalNormal();
+        Vector2 horizontalNormal = IcollisionResult.GetHorizontalNormal();
+
+        if(verticalNormal != horizontalNormal && horizontalNormal != Vector2.zero){
+            print(verticalNormal + " " + horizontalNormal);
+            moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, Vector2.down);
+
+        }
+
+
         ECollisionType verticalCollisionType = IcollisionResult.VerticalCollisionType();
         ECollisionType horizontalCollisionType = IcollisionResult.HorizontalCollisionType();
 
@@ -95,7 +106,7 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
             case ECollisionType.Ground:
                 _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
-                IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetVerticalHit().normal);
+                IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
                 IsetMoveState.SetGroundState(true);
                 IsetMoveState.SetJumpState(false);
                 break;
@@ -104,7 +115,7 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
                 IsetMoveState.SetJumpState(false);
 
-                IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetVerticalHit().normal);
+                IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
                 IsetMoveVelocity.SetVerticalVelocity(Vector2.zero);
                 break;
 
@@ -124,7 +135,7 @@ public class PlayerKinematicMove : KinematicPhysics, IInputMove, IInputMouse
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
                 IsetMoveState.SetGroundState(true);
                 IsetMoveState.SetJumpState(false);
-                IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetHorizontalHit().normal);
+                IsetSlopeDirection.SetSlopeDirection(IcollisionResult.GetHorizontalNormal());
                 break;
             case ECollisionType.Wall:
                 IsetMoveVelocity.SetHorizontalVelocity(Vector2.zero);

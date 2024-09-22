@@ -17,8 +17,8 @@ public interface ICollisionResult{
     public ECollisionType HorizontalCollisionType();
 
     public ref Collider2D GetOverlapHit();
-    public ref RaycastHit2D GetVerticalHit();
-    public ref RaycastHit2D GetHorizontalHit();
+    public ref Vector2 GetVerticalNormal();
+    public ref Vector2 GetHorizontalNormal();
 }
 
 public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, ICollisionResult // IStepCollision
@@ -30,8 +30,8 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
     private EOverlapType overlapType;
 
     private Collider2D overlapHit;
-    private RaycastHit2D verticalHit;
-    private RaycastHit2D horizontalHit;
+    private Vector2 verticalNormal;
+    private Vector2 horizontalNormal;
 
     
     //private ISetMoveVelocity IsetMoveVelocity;
@@ -68,8 +68,8 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
             float platformAngle = Vector2.SignedAngle(Vector2.right, (Vector2)hit[0].bounds.extents) + allowAngle;
             float currentAngle = Vector2.SignedAngle(Vector2.right, mydirection);
 
-            Debug.Log(platformAngle + " " + currentAngle);
-            Debug.DrawRay((Vector2)hit[0].bounds.center, (Vector2)hit[0].bounds.extents, Color.red, 1f);
+            //Debug.Log(platformAngle + " " + currentAngle);
+            //Debug.DrawRay((Vector2)hit[0].bounds.center, (Vector2)hit[0].bounds.extents, Color.red, 1f);
             
             //우
             if (platformAngle >= currentAngle && -platformAngle <= currentAngle){
@@ -98,8 +98,6 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
         }
         else{
             isOverlap = false;
-            //IsetMoveVelocity.SetBaseHorizontalVelocity(Vector2.zero);
-            //IsetMoveVelocity.SetBaseVerticalVelocity(Vector2.zero);
         }
         return delta;
     }
@@ -108,7 +106,8 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
     public Vector2 VerticalCollision(Vector2 currentPosition, Vector2 moveDelta)
     {
         collisionVerticalType = ECollisionType.Air;
-        
+        verticalNormal = Vector2.zero;
+
         Vector2 size = collider.size;
         CapsuleDirection2D colliderDirection = collider.direction;
         Physics2D.queriesStartInColliders = false;
@@ -116,12 +115,10 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
         RaycastHit2D hit = Physics2D.CapsuleCast(currentPosition, size, colliderDirection, 0, moveDelta, moveDelta.magnitude + 0.01f);
         if (hit.collider != null)
         {
-            verticalHit = hit;
-            //IsetSlopeDirection.SetSlopeDirection(hit.normal);
+            verticalNormal = hit.normal;
             float angle = Vector2.Angle(hit.normal, Vector2.up);
             if (angle > 90) {
                 collisionVerticalType = ECollisionType.Wall;
-               // IsetMoveVelocity.SetVerticalVelocity(Vector2.zero);
             }
             else{
                 collisionVerticalType = ECollisionType.Ground;
@@ -131,12 +128,9 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
                     moveDelta += platform.GetVerticalPlatformVelocity();
                 }
             }
-            //iPhysicsInfo.SetJumpState(false);
         }
         else{
-            //iPhysicsInfo.SetGroundState(false);
             collisionVerticalType = ECollisionType.Air;
-           // IsetSlopeDirectionSetSlopeDirection(Vector2.up);
         }
 
         return moveDelta;
@@ -147,7 +141,7 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
     public Vector2 HorizontalCollision(Vector2 currentPosition, Vector2 moveDelta)
     {
         collisionHorizontalType = ECollisionType.Air;
-        
+        horizontalNormal = Vector2.zero;
         Vector2 size = collider.size;
         CapsuleDirection2D colliderDirection = collider.direction;
         Physics2D.queriesStartInColliders = false;
@@ -167,17 +161,14 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
                 if (angle > 50 && angle <= 90)
                 {
                     collisionHorizontalType = ECollisionType.Wall;
-                    //IsetMoveVelocity.SetHorizontalVelocity(Vector2.zero);
                     delta += moveDelta.normalized * (hit.distance - 0.01f);
                     break;
                 }
 
                 else if (angle <= 50)
                 {
-                    //iPhysicsInfo.SetGroundState(true);
-                    //iPhysicsInfo.SetJumpState(false);
                     collisionHorizontalType = ECollisionType.Ground;
-                    //IsetSlopeDirection.SetSlopeDirection(hit.normal);
+                    horizontalNormal = hit.normal;
                     moveDelta = Vector3.ProjectOnPlane(moveDelta, hit.normal).normalized * moveDelta.magnitude;
                     delta += moveDelta.normalized * (hit.distance - 0.01f);
                     moveDelta -= delta;
@@ -186,7 +177,6 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
             }
             else
             {
-                if(i == 0) collisionHorizontalType = ECollisionType.Air;
                 delta += moveDelta;
                 break;
             }
@@ -223,8 +213,10 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
     public ECollisionType HorizontalCollisionType() => collisionHorizontalType;
 
     public ref Collider2D GetOverlapHit() => ref overlapHit;
-    public ref RaycastHit2D GetVerticalHit() => ref verticalHit;
-    public ref RaycastHit2D GetHorizontalHit() => ref horizontalHit;
+    public ref Vector2 GetVerticalNormal() => ref verticalNormal;
+    public ref Vector2 GetHorizontalNormal() => ref horizontalNormal;
+
+    
 
     //private void SetPlatformVelocity(Vector2 horizontalVelocity, Vector2 verticalVelocity){
     //IsetMoveVelocity.SetBaseHorizontalVelocity(horizontalVelocity);

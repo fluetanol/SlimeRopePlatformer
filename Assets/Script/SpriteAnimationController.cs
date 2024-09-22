@@ -3,14 +3,15 @@ using UnityEngine;
 
 public class SpriteAnimationController : MonoBehaviour
 {
-    private IGetPlayerData _playerData;
-    private IGetPlayerStateData _playerStateData;
+    [SerializeField] PlayerData _playerData;
+    private IGetPlayerData _IplayerData;
+    private IGetPlayerStateData _IplayerStateData;
 
     [SerializeField] private Transform _handleObject;
 
     void Awake(){
-        _playerData = PlayerData.IPlayerData;
-        _playerStateData = PlayerData.IPlayerStateData;
+        _IplayerData = _playerData;
+        _IplayerStateData = _playerData;
     
     }
 
@@ -22,14 +23,14 @@ public class SpriteAnimationController : MonoBehaviour
 
     void JumpState(){
         Animator animator = _playerData.GetPlayerComponent().Animator;
-        if (_playerStateData.GetPlayerStateMachine()._playerMoveState == EPlayerMoveState.Jump) animator.SetBool("IsJump", true);
-        else animator.SetBool("IsJump", false);
+        if (_IplayerStateData.GetPlayerStateMachine()._playerMoveState == EPlayerMoveState.Jump) animator.SetBool("isJump", true);
+        else animator.SetBool("isJump", false);
     }
 
     void GroundState(){
         Animator animator = _playerData.GetPlayerComponent().Animator;
-        if (_playerStateData.GetPlayerStateMachine()._playerLandState == EPlayerLandState.Land) animator.SetBool("IsGrounded", true);
-        else animator.SetBool("IsGrounded", false);
+        if (_IplayerStateData.GetPlayerStateMachine()._playerLandState == EPlayerLandState.Land) animator.SetBool("isGrounded", true);
+        else animator.SetBool("isGrounded", false);
     }
 
     void flip(){

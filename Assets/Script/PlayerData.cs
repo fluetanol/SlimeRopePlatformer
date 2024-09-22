@@ -49,9 +49,6 @@ public interface IGetPlayerStateData{
 
 public class PlayerData : MonoBehaviour, IGetPlayerData, IGetPlayerStateData
 {
-    public static IGetPlayerData IPlayerData;
-    public static IGetPlayerStateData IPlayerStateData;
-
     [SerializeField] private PhysicsStats _playerPhysicsStats;
     [SerializeField] private InputState _playerInputState;
     [SerializeField] private PlayerComponent _playerComponent;
@@ -72,9 +69,6 @@ public class PlayerData : MonoBehaviour, IGetPlayerData, IGetPlayerStateData
 
     private void ComponentInitialize()
     {
-        IPlayerData = this;
-        IPlayerStateData = this;
-        
         _playerComponent.CapsuleCollider2D =
         _playerComponent.CapsuleCollider2D == null ? GetComponent<CapsuleCollider2D>() : _playerComponent.CapsuleCollider2D;
 
