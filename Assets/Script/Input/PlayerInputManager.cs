@@ -1,4 +1,4 @@
-using System;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,7 +17,6 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
     void OnEnable() => _playerControls.Enable();
     void OnDisable() => _playerControls.Disable();
 
-    //initialize Player Input
     private void PlayerInputInitialize(){
         _playerControls = new();
         _playerControls.Enable();
@@ -39,16 +38,16 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
 
     public static void SetClickAction(IInputMouse inputMouse){
         _playerControls.Locomotion.Click.started += inputMouse.OnClick;
+        _playerControls.Locomotion.Cursor.performed += inputMouse.OnCursor;
+    
     }
 
     //움직일 시
     public void OnMove(InputAction.CallbackContext ctx)
     {
-        print("OnMove");
         PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
         _playerData.GetPlayerInputState().MoveDirection = ctx.ReadValue<Vector2>();
-        if (stateMachine._playerMoveState != EPlayerMoveState.Jump)
-        {
+        if (stateMachine._playerMoveState != EPlayerMoveState.Jump){
             stateMachine._playerMoveState = EPlayerMoveState.Run;
         }
     }
@@ -59,15 +58,29 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
         PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
         if (stateMachine._playerLandState == EPlayerLandState.Land)
         {
-            if (ctx.ReadValue<float>() == 1)
-            {
+            if (ctx.ReadValue<float>() == 1){
                 stateMachine._playerMoveState = EPlayerMoveState.Jump;
             }
         }
     }
+    public Texture2D cursorTexture;
 
     public void OnClick(InputAction.CallbackContext ctx)
     {
-        print("OnClick");
+        PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
+
+        if(stateMachine._playerBehaviourState != EPlayerBehaviourState.Attack){
+            stateMachine._playerBehaviourState = EPlayerBehaviourState.Attack;
+            _playerData.GetAttackData().attackDirection = (_playerData.GetPlayerInputState().CursorPosition - (Vector2)transform.position).normalized;
+            _playerData.GetAttackData().attackPosition = _playerData.GetPlayerInputState().CursorPosition;
+        }
     }
+    
+    public void OnCursor(InputAction.CallbackContext ctx){
+        Vector2 position = ctx.ReadValue<Vector2>();
+        Vector2 pos = Camera.main.ScreenToWorldPoint(position);
+        GetComponent<LineRenderer>().SetPosition(1,  pos - (Vector2)transform.position);
+        _playerData.GetPlayerInputState().CursorPosition = pos;
+    }
+    
 }

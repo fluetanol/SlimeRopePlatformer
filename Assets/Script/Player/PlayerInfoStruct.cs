@@ -42,7 +42,17 @@ public struct PhysicsStats{
 //Player input state And Insertable Value
 [Serializable]
 public struct InputState{
+    public Vector2 PlayerPosition;
     public Vector2 MoveDirection;
     public Vector2 GravityDirection;
+    public Vector2 CursorPosition;
     public bool IsJump;
+}
+
+[Serializable]
+public struct AttackData
+{
+    public Vector2 attackDirection;
+    public Vector2 attackPosition;
+    public float attackSpeed;
 }

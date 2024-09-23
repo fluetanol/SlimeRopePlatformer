@@ -31,15 +31,13 @@ public class PlayerStateMachine{
     public EPlayerElementalType _playerElementalType;
 
 }
-
-
-
 //플레이어와 관련된 모든 데이터를 보유하고 있는 클래스 (보유 관리. getter, setter 제공)
 
 public interface IGetPlayerData{
     public ref PhysicsStats GetPlayerPhysicsStats();
     public ref InputState GetPlayerInputState();
     public ref PlayerComponent GetPlayerComponent();
+    public ref AttackData GetAttackData();
 }
 
 public interface IGetPlayerStateData{
@@ -52,6 +50,7 @@ public class PlayerData : MonoBehaviour, IGetPlayerData, IGetPlayerStateData
     [SerializeField] private PhysicsStats _playerPhysicsStats;
     [SerializeField] private InputState _playerInputState;
     [SerializeField] private PlayerComponent _playerComponent;
+    [SerializeField] private AttackData _attackData;
     [SerializeField] private PlayerStateMachine _stateMachine;
 
     void Awake(){
@@ -92,5 +91,7 @@ public class PlayerData : MonoBehaviour, IGetPlayerData, IGetPlayerStateData
     public ref PlayerComponent GetPlayerComponent() => ref _playerComponent;
 
     public ref PlayerStateMachine GetPlayerStateMachine() => ref _stateMachine;
+
+    public ref AttackData GetAttackData() => ref _attackData;
 
 }

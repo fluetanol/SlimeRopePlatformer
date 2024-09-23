@@ -8,8 +8,9 @@ public interface ISetMoveVelocity{
     public void SetVerticalVelocity(Vector2 verticalVelocity);
 }
 
-public interface ISetSlopeDirection{
+public interface ISetDirection{
     public void SetSlopeDirection(Vector2 slopeNormal);
+    public void SetJumpDirection(Vector2 jumpDirection);
 }
 
 public interface ISetMoveState{

@@ -3,7 +3,7 @@ using UnityEngine;
 
 //Moving by acceleration
 [Serializable]
-public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection, ISetMoveState
+public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetDirection, ISetMoveState
 {
     public bool isAccelerating = true;
     public bool isGravity = true;
@@ -13,6 +13,7 @@ public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection
     public float _stopAccelTime = 0.5f;   //Stop acceleration time
     private float accelMagnitde = 1;
     private Vector2 _velocity = Vector2.zero; //Velocity vector
+    private Vector2 _jumpdirection = Vector2.up; //Jump direction
     private Vector2 _acceleration = Vector2.zero; //Acceleration
     private Vector2 _jumpVelocity = Vector2.zero; //Jump velocity vector
     private Vector2 _gravityVelocity = Vector2.zero; //Gravity
@@ -68,7 +69,8 @@ public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection
 
     //점프 속도 벡터 계산
     private void CalculateJumpVelocity(in float jumpForce){
-        if (isJumping) _jumpVelocity = Vector2.up * jumpForce * Time.fixedDeltaTime;
+        
+        if (isJumping) _jumpVelocity = _jumpdirection * jumpForce * Time.fixedDeltaTime;
         else _jumpVelocity = Vector2.zero;
     }
 
@@ -97,11 +99,22 @@ public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetSlopeDirection
 
     public void SetSlopeDirection(Vector2 slopeNormal) => this._slopeNormal = slopeNormal;
 
-    public void SetGravityState(bool isGravity) => this.isGravity = isGravity;
+    public void SetJumpDirection(Vector2 jumpDirection) => this._jumpdirection = jumpDirection;
+
+    public void SetGravityState(bool isGravity) {
+        this.isGravity = isGravity;
+        if(!isGravity)  {
+            _gravityVelocity = Vector2.zero;
+            accelMagnitde = 1;
+            _jumpVelocity = Vector2.zero;
+        }
+    }
     
     public void SetAccelState(bool isAccel) => this.isAccelerating = isAccel;
 
-    public void SetGroundState(bool isGround) => this.isGrounded = isGround;
+    public void SetGroundState(bool isGround) {
+        this.isGrounded = isGround;
+    } 
 
     public void SetJumpState(bool isJump) => this.isJumping = isJump;
 

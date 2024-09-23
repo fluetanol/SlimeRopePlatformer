@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.Interactions;
 
 public enum ECollisionType{
     Air,
@@ -33,10 +34,6 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
     private Vector2 verticalNormal;
     private Vector2 horizontalNormal;
 
-    
-    //private ISetMoveVelocity IsetMoveVelocity;
-    //private ISetSlopeDirection IsetSlopeDirection;
-
     //이건 오버랩시 플레이어 위치 조정을 위해 플랫폼 각도를 측정하는 과정에서, 그 각도의 추가 여유를 주기 위한 변수입니다.
     //추가 여유라는 건 플랫폼 지면에 올라가기 위한 추가 여유 각도
     private float allowAngle = 1;
@@ -45,8 +42,6 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
     public PlayerKinematicCollision(CapsuleCollider2D collider)
     {
         this.collider = collider;
-        //this.IsetSlopeDirection = isetSlopeDirection;
-       // this.IsetMoveVelocity = isetMoveVelocity;
     }
 
     public Vector2 OverlapCollision(Vector2 currentPosition)
@@ -118,6 +113,7 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
             verticalNormal = hit.normal;
             float angle = Vector2.Angle(hit.normal, Vector2.up);
             if (angle > 90) {
+                moveDelta = moveDelta.normalized * (hit.distance - 0.01f);
                 collisionVerticalType = ECollisionType.Wall;
             }
             else{
