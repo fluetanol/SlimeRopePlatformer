@@ -105,6 +105,7 @@ public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetDirection, ISe
         this.isGravity = isGravity;
         if(!isGravity)  {
             _gravityVelocity = Vector2.zero;
+            _verticalVelocity = Vector2.zero;
             accelMagnitde = 1;
             _jumpVelocity = Vector2.zero;
         }

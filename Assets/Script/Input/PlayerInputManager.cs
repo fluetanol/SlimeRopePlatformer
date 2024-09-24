@@ -73,6 +73,7 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
             stateMachine._playerBehaviourState = EPlayerBehaviourState.Attack;
             _playerData.GetAttackData().attackDirection = (_playerData.GetPlayerInputState().CursorPosition - (Vector2)transform.position).normalized;
             _playerData.GetAttackData().attackPosition = _playerData.GetPlayerInputState().CursorPosition;
+            
         }
     }
     

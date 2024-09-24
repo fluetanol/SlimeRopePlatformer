@@ -18,7 +18,7 @@ public interface IRopeResult{
 
 
 public class RopeAction : IAttackAction, IRopeResult{
-    private float _ropeVelcity = 20f;
+    private float _ropeVelcity = 40f;
     private ISetMoveVelocity _IsetMoveVelocity;
     private ISetMoveState _IsetMoveState;
     private IGetPlayerData _playerData;
@@ -109,8 +109,8 @@ public class PlayerKinematicMove : KinematicPhysics
 
 
     void FixedUpdate() {
-        PlayerPhysicsStateUpdate();
         Vector2 currentPosition = _playerData.GetPlayerComponent().Rigidbody2D.position;
+        PlayerPhysicsStateUpdate();
 
         PreCollisionFixedUpdate(currentPosition);
         AttackStateUpdate(currentPosition);
@@ -119,10 +119,11 @@ public class PlayerKinematicMove : KinematicPhysics
         PostCollisionFixedUpdate(currentPosition);
         PostVelocityFixedUpdate(currentPosition);
 
-//        print(basehorizontal+" "+baseVertical);
         _playerData.GetPlayerComponent().Rigidbody2D.MovePosition(currentPosition + moveDelta);
     }
 
+
+    //물리 계산 시작 전 플레이어 상태에 따른 물리적 상태 업데이트
     private void PlayerPhysicsStateUpdate(){
         if (_playerStateData.GetPlayerStateMachine()._playerMoveState == EPlayerMoveState.Jump){
             IsetMoveState.SetGravityState(true);
@@ -140,7 +141,7 @@ public class PlayerKinematicMove : KinematicPhysics
             IsetMoveState.SetGroundState(false);
     }
 
-
+    //공격 상태일 때의 업데이트 (이건 인자 때문에 구조적으로 일단 빼야했음)
     private void AttackStateUpdate(Vector2 currentPosition){
 
         if (_playerStateData.GetPlayerStateMachine()._playerBehaviourState == EPlayerBehaviourState.Attack){
@@ -153,16 +154,13 @@ public class PlayerKinematicMove : KinematicPhysics
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Jump;
                 IsetMoveState.SetGravityState(true);
                 IsetMoveState.SetJumpState(true);
-                
-                basehorizontal = Move.MoveBaseHorizontalVelocity();
-                baseVertical = Move.MoveBaseVerticalVelocity();
             
                 IsetDirection.SetJumpDirection((basehorizontal + baseVertical).normalized);
             }
         }
     }
 
-
+    //충돌 전 현재 위치에 따라 올바른 충돌 계산을 위한 전처리
     private void PreCollisionFixedUpdate(Vector2 currentPosition){
         moveDelta = IOverlapCollision.OverlapCollision(currentPosition);
         EOverlapType overlapType = IcollisionResult.OverlapCollisionType();
@@ -184,6 +182,7 @@ public class PlayerKinematicMove : KinematicPhysics
         }
     }
 
+    //충돌 후 전처리 된 위치에 따른 충돌 계산
     private void PostCollisionFixedUpdate(Vector2 currentPosition){
         moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, moveVertical);
         moveDelta += ISeperateCollision.HorizontalCollision(currentPosition + moveDelta, moveHorizontal);
@@ -208,13 +207,16 @@ public class PlayerKinematicMove : KinematicPhysics
             case ECollisionType.Ground:
                 _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
+                //_playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
                 IsetDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
                 IsetDirection.SetJumpDirection(Vector2.up);
                 break;
             case ECollisionType.Wall:
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
+                _playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
                 IsetDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
                 IsetMoveVelocity.SetVerticalVelocity(Vector2.zero);
+                
                 break;
 
             case ECollisionType.Air:
@@ -235,31 +237,39 @@ public class PlayerKinematicMove : KinematicPhysics
                 break;
             case ECollisionType.Wall:
                 IsetMoveVelocity.SetHorizontalVelocity(Vector2.zero);
+                _playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
                 break;
             case ECollisionType.Air:
                 break;
         }
     }
 
-    
-    private void PostVelocityFixedUpdate(Vector2 currentPosition){
-        moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, baseVertical);
-        moveDelta += ISeperateCollision.HorizontalCollision(currentPosition+moveDelta, basehorizontal);
-        
-        print(IcollisionResult.GetVerticalNormal());
-       
-        
-    }
-
-    private void PreVelocityFixedUpdate(ref Vector2 moveHorizontal, ref Vector2 moveVertical, ref Vector2 basehorizontal, ref Vector2 baseVertical){
+    //충돌 전, 현재 상태에 따른 캐릭터의 물리적 움직임 계산
+    private void PreVelocityFixedUpdate(ref Vector2 moveHorizontal, ref Vector2 moveVertical, ref Vector2 basehorizontal, ref Vector2 baseVertical)
+    {
         ref PhysicsStats _playerPhysicsStats = ref _playerData.GetPlayerPhysicsStats();
         ref InputState _playerInputState = ref _playerData.GetPlayerInputState();
 
         moveHorizontal = Move.MoveHorizontalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
         moveVertical = Move.MoveVerticalFixedUpdate(ref _playerPhysicsStats, ref _playerInputState);
         basehorizontal = Move.MoveBaseHorizontalVelocity();
-        baseVertical = Move.MoveBaseVerticalVelocity(); 
+        baseVertical = Move.MoveBaseVerticalVelocity();
     }
+
+
+    //모든 충돌 처리 후, 강제로 시행되어야 할 특정 물리적 움직임에 대한 처리 (특히 플랫폼 관련 이동 때문에 어쩔수가 없음)
+    private void PostVelocityFixedUpdate(Vector2 currentPosition){
+        if(_playerStateData.GetPlayerStateMachine()._playerBehaviourState == EPlayerBehaviourState.Attack){
+            moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, baseVertical);
+            moveDelta += ISeperateCollision.HorizontalCollision(currentPosition + moveDelta, basehorizontal);
+        }
+        else{
+            moveDelta += baseVertical + basehorizontal;
+        }
+        
+//        print(IcollisionResult.GetVerticalNormal());
+    }
+
 
 
     void OnDrawGizmos()

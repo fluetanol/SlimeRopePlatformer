@@ -81,9 +81,6 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
 
                 overlapHit = hit[0];
                 overlapType = EOverlapType.Overlap;
-                //IPlatformVelocity platformVelocity = hit[0].GetComponent<IPlatformVelocity>();
-                //SetPlatformVelocity(platformVelocity.GetHorizontalPlatformVelocity(), platformVelocity.GetVerticalPlatformVelocity());
-
                 float distance = ((Vector2)hit[0].bounds.center + 
                 (Vector2)hit[0].bounds.extents).y - (currentPosition.y - collider.size.y / 2);
                 
@@ -118,7 +115,6 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
             }
             else{
                 collisionVerticalType = ECollisionType.Ground;
-               // iPhysicsInfo.SetGroundState(true);
                 moveDelta = moveDelta.normalized * (hit.distance - 0.01f);
                 if(hit.collider.TryGetComponent(out PlatformKinematicMove platform) && !isOverlap){
                     moveDelta += platform.GetVerticalPlatformVelocity();

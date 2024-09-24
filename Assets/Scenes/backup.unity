@@ -463,7 +463,7 @@ Transform:
   m_GameObject: {fileID: 529948762}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 84.586426, y: 12.612096, z: -10}
+  m_LocalPosition: {x: 83.69997, y: 9.199454, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -487,6 +487,37 @@ MonoBehaviour:
   yOffset: 3
   cameraOrthoGrahicSize: 8
   _cameraLerpSpeed: 1
+--- !u!1 &572358636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 572358637}
+  m_Layer: 0
+  m_Name: EndPointC_5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &572358637
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 572358636}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 99, y: 20, z: 0}
+  m_LocalScale: {x: 10, y: 100.00003, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1902185755}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &624480410
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,8 +676,10 @@ MonoBehaviour:
     acceltime: 0
     stoptime: 0
   _PlatformInputState:
+    PlayerPosition: {x: 0, y: 0}
     MoveDirection: {x: 0, y: 0}
     GravityDirection: {x: 0, y: 0}
+    CursorPosition: {x: 0, y: 0}
     IsJump: 0
   _PlatformComponent:
     CapsuleCollider2D: {fileID: 0}
@@ -713,13 +746,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isNotDestroyed: 1
-  StartBoundaries:
+  XBoundaries:
   - {fileID: 482979304}
   - {fileID: 215474411}
-  EndBoundaries:
-  - {fileID: 215474411}
   - {fileID: 1840881512}
-  clusterNum: 0
+  YBoundaries:
+  - {fileID: 1102172668}
+  - {fileID: 572358637}
+  XclusterNum: 0
+  YclusterNum: 0
 --- !u!4 &780813363
 Transform:
   m_ObjectHideFlags: 0
@@ -734,6 +769,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1102172667
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1102172668}
+  m_Layer: 0
+  m_Name: EndPointC_4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1102172668
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1102172667}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 99.51, y: -10, z: 0}
+  m_LocalScale: {x: 10, y: 100.00003, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1902185755}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1114551833
 GameObject:
@@ -14587,6 +14653,8 @@ Transform:
   - {fileID: 482979304}
   - {fileID: 215474411}
   - {fileID: 1840881512}
+  - {fileID: 1102172668}
+  - {fileID: 572358637}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2060822707
@@ -14620,7 +14688,7 @@ Transform:
   m_GameObject: {fileID: 2060822707}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 84.586395, y: 9.6121, z: 0}
+  m_LocalPosition: {x: 83.7, y: 6.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14641,7 +14709,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isNotDestroyed: 1
   cursorTexture: {fileID: 2800000, guid: a80ca8e8ff2b71b4c8fd9f75968f93a5, type: 3}
-  pos: {x: 0, y: 0}
 --- !u!50 &2060822712
 Rigidbody2D:
   serializedVersion: 4
@@ -14748,8 +14815,10 @@ MonoBehaviour:
     acceltime: 0.25
     stoptime: 0.25
   _playerInputState:
+    PlayerPosition: {x: 0, y: 0}
     MoveDirection: {x: 0, y: 0}
     GravityDirection: {x: 0, y: 0}
+    CursorPosition: {x: 0, y: 0}
     IsJump: 0
   _playerComponent:
     CapsuleCollider2D: {fileID: 0}
@@ -14757,6 +14826,10 @@ MonoBehaviour:
     Rigidbody2D: {fileID: 0}
     SpriteRenderer: {fileID: 0}
     Animator: {fileID: 0}
+  _attackData:
+    attackDirection: {x: 0, y: 0}
+    attackPosition: {x: 0, y: 0}
+    attackSpeed: 0
   _stateMachine:
     _playerMoveState: 0
     _playerLandState: 2
