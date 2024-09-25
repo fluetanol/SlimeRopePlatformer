@@ -1,4 +1,5 @@
 
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -43,8 +44,7 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
     }
 
     //움직일 시
-    public void OnMove(InputAction.CallbackContext ctx)
-    {
+    public void OnMove(InputAction.CallbackContext ctx){
         PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
         _playerData.GetPlayerInputState().MoveDirection = ctx.ReadValue<Vector2>();
 
@@ -64,15 +64,23 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
             }
         }
     }
-    public Texture2D cursorTexture;
 
     public void OnClick(InputAction.CallbackContext ctx)
     {
         PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
         if(stateMachine._playerBehaviourState != EPlayerBehaviourState.Attack){
             stateMachine._playerBehaviourState = EPlayerBehaviourState.Attack;
-            _playerData.GetAttackData().attackDirection = (_playerData.GetPlayerInputState().CursorPosition - (Vector2)transform.position).normalized;
-            _playerData.GetAttackData().attackPosition = _playerData.GetPlayerInputState().CursorPosition;
+            Vector2 direction = (_playerData.GetPlayerInputState().CursorPosition - (Vector2)transform.position).normalized;
+            float distance = _playerData.GetAttackData().attackRange;
+
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance);
+            if (hit.collider != null){
+                _playerData.GetAttackData().attackPosition = hit.point;
+            }else{
+                _playerData.GetAttackData().attackPosition = (Vector2)transform.position + direction * distance;
+            }
+            _playerData.GetAttackData().attackDirection = direction;
+            //_playerData.GetPlayerInputState().CursorPosition;
             
         }
     }
@@ -81,6 +89,21 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
         Vector2 position = ctx.ReadValue<Vector2>();
         Vector2 pos = Camera.main.ScreenToWorldPoint(position);
         _playerData.GetPlayerInputState().CursorPosition = pos;
+
+        Vector2 rayVector = _playerData.GetPlayerInputState().CursorPosition - (Vector2)transform.position;
+        Vector2 direction = rayVector.normalized;
+        float distance = _playerData.GetAttackData().attackRange > rayVector.magnitude ? rayVector.magnitude : _playerData.GetAttackData().attackRange;
+        
+        
+        PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
+        if (stateMachine._playerBehaviourState != EPlayerBehaviourState.Attack){
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance);
+            if (hit.collider != null){
+                _playerData.GetAttackData().attackPosition = hit.point;
+            }else{
+                _playerData.GetAttackData().attackPosition = (Vector2)transform.position + direction * distance;
+            }
+        }
     }
     
 }

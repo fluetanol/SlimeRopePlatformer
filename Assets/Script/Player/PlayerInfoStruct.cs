@@ -55,5 +55,6 @@ public struct AttackData
 {
     public Vector2 attackDirection;
     public Vector2 attackPosition;
+    public float attackRange;
     public float attackSpeed;
 }
