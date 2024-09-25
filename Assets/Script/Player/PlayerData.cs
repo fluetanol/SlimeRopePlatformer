@@ -18,8 +18,9 @@ public enum EPlayerLandState{
 }
 
 public enum EPlayerBehaviourState{
-    Normal, //아무것도 안한 일반 상태
+    Normal, //아무것도 안한 일반 상태(공격이 가능 함)
     Attack, //우클릭 누를 시
+    AttackWait, //공격 후 대기 상태(공격이 종료되긴 했지만, 쿨타임 등으로 인해 공격을 할 수 없음)
     Dead,   //죽었을 때 (아무것도 못하게 막아야 함)
 }
 

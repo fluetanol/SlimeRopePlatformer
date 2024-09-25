@@ -19,8 +19,8 @@ public abstract class KinematicPhysics : MonoBehaviour
     
     protected void Awake(){
         ComponentInitialize();
-        SettingInitialize();
         InterfaceInitialize();
+        SettingInitialize();
     }
     
     void OnEnable(){

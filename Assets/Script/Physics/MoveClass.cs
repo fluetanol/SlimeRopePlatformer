@@ -10,7 +10,12 @@ public interface ISetMoveVelocity{
 
 public interface ISetDirection{
     public void SetSlopeDirection(Vector2 slopeNormal);
+
+}
+
+public interface ISetJumpValue{
     public void SetJumpDirection(Vector2 jumpDirection);
+    public void SetJumpMagnitude(float jumpMagnitude);
 }
 
 public interface ISetMoveState{
@@ -18,6 +23,7 @@ public interface ISetMoveState{
     public void SetAccelState(bool isAccel);
     public void SetGroundState(bool isGround);
     public void SetJumpState(bool isJump);
+    public void SetMoveState(bool isMove);
 }
 
 [Serializable]

@@ -19,27 +19,23 @@ public interface IRopeResult{
 
 public class RopeAction : IAttackAction, IRopeResult{
     private float _ropeVelcity = 40f;
-    private ISetMoveVelocity _IsetMoveVelocity;
     private ISetMoveState _IsetMoveState;
     private IGetPlayerData _playerData;
+    private ISetJumpValue _IsetJumpValue;
 
-    public RopeAction(ISetMoveVelocity IsetMoveVelocity, ISetMoveState IsetMoveState, IGetPlayerData playerData){
-        _IsetMoveVelocity = IsetMoveVelocity;
-        _IsetMoveState = IsetMoveState;
-        _playerData = playerData;
+    public RopeAction(ISetJumpValue IsetJumpValue, ISetMoveState IsetMoveState, IGetPlayerData playerData){
+        this._IsetJumpValue = IsetJumpValue;
+        this._IsetMoveState = IsetMoveState;
+        this._playerData = playerData;
     
     }
 
     public void Attack(){
         Vector2 dir = _playerData.GetAttackData().attackDirection;
         _IsetMoveState.SetGravityState(false);
-    
-         Vector2 ropeVelocity = dir * _ropeVelcity * Time.fixedDeltaTime;
-         Vector2 horizontalVelocity = new Vector2(ropeVelocity.x, 0);
-         Vector2 verticalVelocity = new Vector2(0, ropeVelocity.y);
-         
-        _IsetMoveVelocity.SetBaseHorizontalVelocity(horizontalVelocity);
-        _IsetMoveVelocity.SetBaseVerticalVelocity(verticalVelocity);
+        _IsetMoveState.SetJumpState(true);
+        _IsetMoveState.SetMoveState(false);
+        _IsetJumpValue.SetJumpDirection(dir);
     }
 
     public bool IsFinish(Vector2 position){
@@ -74,8 +70,11 @@ public class PlayerKinematicMove : KinematicPhysics
 
     private IAttackAction IAttackAction;
     private IRopeResult IRopeResult;
-
+    private ISetJumpValue IsetJumpValue;
+    private float RopeForce;
+    private float JumpForce;
     //public event Action OnStateChange;
+
 
     //just for debugging....
     [SerializeField] private Vector2 moveHorizontal, moveVertical, basehorizontal, baseVertical, baseVector, moveDelta, slopeDirection;
@@ -94,19 +93,24 @@ public class PlayerKinematicMove : KinematicPhysics
         IsetMoveVelocity = accelMove;
         IsetDirection = accelMove;
         IsetMoveState = accelMove;
+        IsetJumpValue = accelMove;
 
         PlayerKinematicCollision playerCollision = new PlayerKinematicCollision(CapsuleCollider2D);
         IOverlapCollision = playerCollision;
         ISeperateCollision = playerCollision;
         IcollisionResult = playerCollision;
 
-        RopeAction ropeAction =  new RopeAction(IsetMoveVelocity, IsetMoveState, _playerData);
+        RopeAction ropeAction =  new RopeAction(IsetJumpValue, IsetMoveState, _playerData);
         IRopeResult = ropeAction;
         IAttackAction = ropeAction;
-
-    
     }
 
+    protected override void SettingInitialize()
+    {
+        //base.SettingInitialize();
+        JumpForce = _playerData.GetPlayerPhysicsStats().JumpForce;
+        RopeForce = _playerData.GetPlayerPhysicsStats().AttackForce;
+    }
 
     void FixedUpdate() {
         Vector2 currentPosition = _playerData.GetPlayerComponent().Rigidbody2D.position;
@@ -115,7 +119,7 @@ public class PlayerKinematicMove : KinematicPhysics
         PreCollisionFixedUpdate(currentPosition);
         AttackStateUpdate(currentPosition);
 
-        PreVelocityFixedUpdate(ref moveHorizontal, ref moveVertical, ref basehorizontal, ref baseVertical);
+        PreVelocityFixedUpdate();
         PostCollisionFixedUpdate(currentPosition);
         PostVelocityFixedUpdate(currentPosition);
 
@@ -146,17 +150,20 @@ public class PlayerKinematicMove : KinematicPhysics
 
         if (_playerStateData.GetPlayerStateMachine()._playerBehaviourState == EPlayerBehaviourState.Attack){
             IAttackAction.Attack();
+            _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Jump;
+            _playerData.GetPlayerPhysicsStats().JumpForce = RopeForce;
 
-            if (IRopeResult.IsFinish(currentPosition))
-            {
-                print("?!");
+            if (IRopeResult.IsFinish(currentPosition)){
                 _playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
-                _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Jump;
-                IsetMoveState.SetGravityState(true);
-                IsetMoveState.SetJumpState(true);
-            
-                IsetDirection.SetJumpDirection((basehorizontal + baseVertical).normalized);
             }
+        }
+        if (_playerStateData.GetPlayerStateMachine()._playerBehaviourState == EPlayerBehaviourState.Normal)
+        {
+            _playerData.GetPlayerPhysicsStats().JumpForce = JumpForce;
+            //if(_playerData.GetPlayerInputState().MoveDirection != Vector2.zero)  
+              //  IsetJumpValue.SetJumpDirection(Vector2.up);
+            IsetMoveState.SetGravityState(true);
+            IsetMoveState.SetMoveState(true);
         }
     }
 
@@ -201,22 +208,23 @@ public class PlayerKinematicMove : KinematicPhysics
         horizontalCollisionAction(horizontalCollisionType);
     }
 
+
     private void verticalCollisionAction(ECollisionType verticalCollisionType){
         switch (verticalCollisionType)
         {
             case ECollisionType.Ground:
                 _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
-                //_playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
+                _playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
                 IsetDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
-                IsetDirection.SetJumpDirection(Vector2.up);
+                IsetJumpValue.SetJumpDirection(Vector2.up);
                 break;
             case ECollisionType.Wall:
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
                 _playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
                 IsetDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
                 IsetMoveVelocity.SetVerticalVelocity(Vector2.zero);
-                
+                IsetJumpValue.SetJumpDirection(Vector2.up);
                 break;
 
             case ECollisionType.Air:
@@ -232,20 +240,28 @@ public class PlayerKinematicMove : KinematicPhysics
             case ECollisionType.Ground:
                 _playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
                 _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
+                _playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
                 IsetDirection.SetSlopeDirection(IcollisionResult.GetHorizontalNormal());
-                IsetDirection.SetJumpDirection(Vector2.up);
+                IsetJumpValue.SetJumpDirection(Vector2.up);
                 break;
             case ECollisionType.Wall:
-                IsetMoveVelocity.SetHorizontalVelocity(Vector2.zero);
                 _playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
+                IsetMoveVelocity.SetHorizontalVelocity(Vector2.zero);
+                IsetJumpValue.SetJumpDirection(Vector2.up);
                 break;
             case ECollisionType.Air:
                 break;
         }
     }
 
-    //충돌 전, 현재 상태에 따른 캐릭터의 물리적 움직임 계산
-    private void PreVelocityFixedUpdate(ref Vector2 moveHorizontal, ref Vector2 moveVertical, ref Vector2 basehorizontal, ref Vector2 baseVertical)
+    /// <summary>
+    /// 충돌 전, 현재 상태에 따른 캐릭터의 물리적 움직임 계산
+    /// </summary>
+    /// <param name="moveHorizontal"></param>
+    /// <param name="moveVertical"></param>
+    /// <param name="basehorizontal"></param>
+    /// <param name="baseVertical"></param>
+    private void PreVelocityFixedUpdate()
     {
         ref PhysicsStats _playerPhysicsStats = ref _playerData.GetPlayerPhysicsStats();
         ref InputState _playerInputState = ref _playerData.GetPlayerInputState();
@@ -259,15 +275,7 @@ public class PlayerKinematicMove : KinematicPhysics
 
     //모든 충돌 처리 후, 강제로 시행되어야 할 특정 물리적 움직임에 대한 처리 (특히 플랫폼 관련 이동 때문에 어쩔수가 없음)
     private void PostVelocityFixedUpdate(Vector2 currentPosition){
-        if(_playerStateData.GetPlayerStateMachine()._playerBehaviourState == EPlayerBehaviourState.Attack){
-            moveDelta += ISeperateCollision.VerticalCollision(currentPosition + moveDelta, baseVertical);
-            moveDelta += ISeperateCollision.HorizontalCollision(currentPosition + moveDelta, basehorizontal);
-        }
-        else{
             moveDelta += baseVertical + basehorizontal;
-        }
-        
-//        print(IcollisionResult.GetVerticalNormal());
     }
 
 

@@ -4,6 +4,7 @@ using UnityEngine;
 public class SpriteAnimationController : MonoBehaviour
 {
     [SerializeField] PlayerData _playerData;
+    [SerializeField] LineRenderer _lineRenderer;
     private IGetPlayerData _IplayerData;
     private IGetPlayerStateData _IplayerStateData;
 
@@ -19,6 +20,17 @@ public class SpriteAnimationController : MonoBehaviour
         JumpState();
         GroundState();
         flip();
+        LineRendererState();
+    }
+
+    void LineRendererState(){
+        if(_IplayerStateData.GetPlayerStateMachine()._playerBehaviourState == EPlayerBehaviourState.Attack){
+            _lineRenderer.enabled = true;
+            _lineRenderer.SetPosition(1, _IplayerData.GetAttackData().attackPosition - (Vector2)_playerData.transform.position);
+        }
+        else {
+            _lineRenderer.enabled = false;
+        }
     }
 
     void JumpState(){

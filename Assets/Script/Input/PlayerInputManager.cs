@@ -47,6 +47,7 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
     {
         PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
         _playerData.GetPlayerInputState().MoveDirection = ctx.ReadValue<Vector2>();
+
         if (stateMachine._playerMoveState != EPlayerMoveState.Jump){
             stateMachine._playerMoveState = EPlayerMoveState.Run;
         }
@@ -68,7 +69,6 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
     public void OnClick(InputAction.CallbackContext ctx)
     {
         PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
-
         if(stateMachine._playerBehaviourState != EPlayerBehaviourState.Attack){
             stateMachine._playerBehaviourState = EPlayerBehaviourState.Attack;
             _playerData.GetAttackData().attackDirection = (_playerData.GetPlayerInputState().CursorPosition - (Vector2)transform.position).normalized;
@@ -80,7 +80,6 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
     public void OnCursor(InputAction.CallbackContext ctx){
         Vector2 position = ctx.ReadValue<Vector2>();
         Vector2 pos = Camera.main.ScreenToWorldPoint(position);
-        GetComponent<LineRenderer>().SetPosition(1,  pos - (Vector2)transform.position);
         _playerData.GetPlayerInputState().CursorPosition = pos;
     }
     

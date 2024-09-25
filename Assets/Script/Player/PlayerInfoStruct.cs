@@ -31,6 +31,7 @@ public struct PhysicsStats{
     public float HorizontalSpeed; 
     public float Gravity;
     public float JumpForce;
+    public float AttackForce;
     public float FallingClamp;
     public int jumpCount;
     public int collisionCount;
