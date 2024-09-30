@@ -1,3 +1,4 @@
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.InputSystem.Interactions;
 
@@ -66,6 +67,41 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
             //Debug.Log(platformAngle + " " + currentAngle);
             //Debug.DrawRay((Vector2)hit[0].bounds.center, (Vector2)hit[0].bounds.extents, Color.red, 1f);
             
+            RaycastHit2D hits = Physics2D.Raycast(currentPosition, -mydirection, mydirection.magnitude, LayerMask.GetMask("Platform"));
+            Vector2 normal = hits.normal;
+            if(hits.collider != null){
+                normal = hits.normal;
+            }
+            if(normal == Vector2.up){
+
+                isOverlap = true;
+                overlapHit = hit[0];
+                overlapType = EOverlapType.Overlap;
+                float distance = ((Vector2)hit[0].bounds.center +
+                (Vector2)hit[0].bounds.extents).y - (currentPosition.y - collider.size.y / 2);
+                delta = Vector2.up * distance;
+            }
+            else if (normal == Vector2.right)
+            {
+                delta = Vector2.right * Mathf.Abs((hit[0].bounds.center + hit[0].bounds.extents).x - (currentPosition.x - collider.size.x / 2));
+            }
+            else if (normal == Vector2.left)
+            {
+                delta = Vector2.left * Mathf.Abs((hit[0].bounds.center - hit[0].bounds.extents).x - (currentPosition.x + collider.size.x / 2));
+            }
+
+            else if (normal == Vector2.down){
+                Debug.Log("overlap down");
+                isOverlap = true;
+                overlapHit = hit[0];
+                overlapType = EOverlapType.Overlap;
+                float distance = ((Vector2)hit[0].bounds.center +
+                (Vector2)hit[0].bounds.extents).y - (currentPosition.y - collider.size.y / 2);
+                delta = Vector2.down * hits.distance;
+                // delta = Vector2.down * distance;
+            }
+
+            /*
             //우
             if (platformAngle >= currentAngle && -platformAngle <= currentAngle){
                 delta = Vector2.right * Mathf.Abs((hit[0].bounds.center + hit[0].bounds.extents).x - (currentPosition.x - collider.size.x / 2));
@@ -87,6 +123,7 @@ public class PlayerKinematicCollision : IOverlapCollision, ISeperateCollision, I
                 delta = Vector2.up * distance;
             }
             //아래
+            */
         }
         else{
             isOverlap = false;

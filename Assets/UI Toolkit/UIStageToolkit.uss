@@ -1,0 +1,19 @@
+.custom-label {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(68, 138, 255);
+}
+
+.unity-scroll-view--horizontal {
+}
+
+.unity-scroll-view--scroll {
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    justify-content: flex-start;
+}
+
+.unity-scroller {
+}
+
+.unity-scroller--horizontal {
+}
