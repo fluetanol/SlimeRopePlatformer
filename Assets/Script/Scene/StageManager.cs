@@ -57,4 +57,15 @@ public class StageManager : SingletonMonobehavior<StageManager>
     }
 
 
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        foreach(var k in XBoundaries){
+            Gizmos.DrawLine(k.position, k.position + Vector3.up * 100);
+        }
+        Gizmos.color = Color.blue;
+        foreach(var k in YBoundaries){
+            Gizmos.DrawLine(k.position, k.position + Vector3.right * 100);
+        }
+    }
+
 }
