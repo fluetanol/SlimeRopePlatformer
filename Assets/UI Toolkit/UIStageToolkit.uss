@@ -17,3 +17,16 @@
 
 .unity-scroller--horizontal {
 }
+
+.default {
+    flex-grow: 1;
+    transition-duration: 0.8s;
+    transition-timing-function: ease;
+}
+
+.disappear {
+    opacity: 0;
+    display: flex;
+    transition-duration: 0.8s;
+    transition-timing-function: ease;
+}

@@ -11,3 +11,26 @@
     border-top-color: rgba(0, 0, 0, 0);
     border-bottom-color: rgba(0, 0, 0, 0);
 }
+
+.mainDefault {
+    flex-grow: 1;
+    position: relative;
+    overflow: visible;
+    display: flex;
+    opacity: 1;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-self: auto;
+    background-color: rgba(255, 255, 255, 0);
+    transition-duration: 0.8s;
+    transition-property: all;
+}
+
+.mainDisappear {
+    opacity: 0;
+    transition-duration: 0.8s;
+    transition-property: opacity;
+    display: flex;
+}

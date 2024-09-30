@@ -1,11 +1,8 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using UnityEngine.UIElements.Experimental;
 
 
 public class SceneNames{
@@ -14,45 +11,51 @@ public class SceneNames{
 
 public class MainUI : MonoBehaviour
 {
-    private UIDocument uiDoc;
+    private IVisibleUI _stageVisibleUI;
+    private IVisibleUI _settingVisibleUI;
+
+    private UIDocument _uiDoc;
     private VisualElement _root;
-
+    private VisualElement _contentsContainer;
+    private List<Button> ButtonList;
     private List<VisualElement> panelList;
-    private ProgressBar progressBar;
-    public List<Button> ButtonList;
 
-
+    private event Action OnGameStart;
+    private event Action OnSetting;
+    private event Action OnExit;
 
 
 
     void Awake(){
-
-        uiDoc = GetComponent<UIDocument>();
-        _root = uiDoc.rootVisualElement;
-        
-        Button button = _root.Q<Button>("Button");
-        panelList = _root.Children().ToList();
-        progressBar = _root.Q<ProgressBar>("ProgressBar");
-        ButtonList = panelList.SelectMany(x => x.Query<Button>().ToList()).ToList();
+        GetObjectComponent();
+        GetUIComponent();
     }
 
-    void Start()
-    {
+    void OnEnable() {
         ButtonList[0].clicked += OnGameStartButton;
         ButtonList[1].clicked += OnGameSettingButton;
         ButtonList[2].clicked += OnGameExitButton;
+
+        OnGameStart += _stageVisibleUI.Visible; 
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    void GetObjectComponent(){
+        _uiDoc = GetComponent<UIDocument>();
+        _stageVisibleUI = FindObjectOfType<StageUI>(); 
     }
 
+    void GetUIComponent(){
+        _root = _uiDoc.rootVisualElement;
+        _contentsContainer = _root.Q<VisualElement>();
+        panelList = _root.Children().ToList();
+        ButtonList = panelList.SelectMany(x => x.Query<Button>().ToList()).ToList();
+    }
 
     void OnGameStartButton(){
-        AsyncOperation asyncOP = SceneManager.LoadSceneAsync(SceneNames.GameStartScene);
-        StartCoroutine(LoadSceneProgress(asyncOP));
-    
+        _contentsContainer.AddToClassList("mainDisappear");
+        StartCoroutine(LoadAnotherUI());
+  
     }
 
     void OnGameExitButton(){
@@ -65,20 +68,15 @@ public class MainUI : MonoBehaviour
         Debug.Log("Game Setting");
     }
 
-    private IEnumerator<YieldInstruction> LoadSceneProgress(AsyncOperation asyncOP){
-        asyncOP.allowSceneActivation = false;
-        progressBar.visible = true;
-        Easing.Linear(3);
-        while (!asyncOP.isDone){
-            progressBar.value = asyncOP.progress * 100;
-            if(asyncOP.progress >= 0.9f){
-                progressBar.value += 5;
-                yield return new WaitForSeconds(0.5f);
-                asyncOP.allowSceneActivation = true;
-                
-            }
-            yield return null;
+
+    private IEnumerator<YieldInstruction> LoadAnotherUI(){
+        float time = 0.5f;
+        while (time > 0){
+            time -= Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
         }
+        OnGameStart?.Invoke();
+        _contentsContainer.style.display = DisplayStyle.None;
     }
 
 }
