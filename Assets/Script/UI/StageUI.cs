@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,13 +12,16 @@ public interface IVisibleUI
 
 public class StageUI : MonoBehaviour, IVisibleUI
 {
+    private IVisibleUI _mainVisibleUI;
+
     private UIDocument uiDoc;
     private VisualElement _root;
     private ScrollView _scrollView;
-    private ProgressBar _progressBar;
-    private Button _backButton;
     private VisualElement contentContainer; // 스크롤뷰의 컨텐츠 영역 참조
     private List<GroupBox> scrollViewBoxes;
+
+    private ProgressBar _progressBar;
+    private Button _backButton;
 
 
     private Vector2 startPointerPosition;  // 마우스 클릭 시작 위치
@@ -26,18 +30,39 @@ public class StageUI : MonoBehaviour, IVisibleUI
     
     private Scroller scroller;
 
+    public event Action OnGameStart;
+
+
     void Awake()
     {
+        GetObjectComponent();
+        GetUIComponent();
+    }
+
+    void OnEnable() {
+        OnGameStart += _mainVisibleUI.Visible;
+        _backButton.clicked += OnBackButton;
+    }
+
+
+    void GetObjectComponent() {
         uiDoc = GetComponent<UIDocument>();
+        _mainVisibleUI = FindObjectOfType<MainUI>();
+    }
+
+    void GetUIComponent(){
         _root = uiDoc.rootVisualElement;
 
-        VisualElement e = _root.Q<VisualElement>("StageElement");
-        
-        _scrollView = e.Q<ScrollView>();
+        VisualElement titleElement = _root.Q<VisualElement>("TitleElement");
+        VisualElement stageElement = _root.Q<VisualElement>("StageElement");
+
+        _backButton = titleElement.Q<Button>();
+        _scrollView = stageElement.Q<ScrollView>();
         scroller = _scrollView.horizontalScroller;
         contentContainer = _scrollView.contentContainer;
         scrollViewBoxes = contentContainer.Query<GroupBox>().ToList();
     }
+
 
     void Start()
     {
@@ -94,6 +119,12 @@ public class StageUI : MonoBehaviour, IVisibleUI
         });
     }
 
+    void OnBackButton(){
+        Disappear();
+        print("!");
+        OnGameStart?.Invoke();
+    }
+
 
     public void Visible(){
         VisualElement a = _root.Q<VisualElement>("VisualElementContainer");
@@ -104,6 +135,9 @@ public class StageUI : MonoBehaviour, IVisibleUI
         VisualElement a = _root.Q<VisualElement>("VisualElementContainer");
         a.AddToClassList("disappear");
     }
+
+
+
 
 
 /*

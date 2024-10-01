@@ -9,7 +9,7 @@ public class SceneNames{
     public const string GameStartScene = "GameScene";
 }
 
-public class MainUI : MonoBehaviour
+public class MainUI : MonoBehaviour, IVisibleUI
 {
     private IVisibleUI _stageVisibleUI;
     private IVisibleUI _settingVisibleUI;
@@ -32,11 +32,7 @@ public class MainUI : MonoBehaviour
     }
 
     void OnEnable() {
-        ButtonList[0].clicked += OnGameStartButton;
-        ButtonList[1].clicked += OnGameSettingButton;
-        ButtonList[2].clicked += OnGameExitButton;
-
-        OnGameStart += _stageVisibleUI.Visible; 
+        SetUIEvent();
 
     }
 
@@ -52,10 +48,18 @@ public class MainUI : MonoBehaviour
         ButtonList = panelList.SelectMany(x => x.Query<Button>().ToList()).ToList();
     }
 
+    void SetUIEvent(){
+        ButtonList[0].clicked += OnGameStartButton;
+        ButtonList[1].clicked += OnGameSettingButton;
+        ButtonList[2].clicked += OnGameExitButton;
+
+        OnGameStart += _stageVisibleUI.Visible;
+    }
+
+
+
     void OnGameStartButton(){
-        _contentsContainer.AddToClassList("mainDisappear");
-        StartCoroutine(LoadAnotherUI());
-  
+        Disappear();
     }
 
     void OnGameExitButton(){
@@ -69,15 +73,26 @@ public class MainUI : MonoBehaviour
     }
 
 
-    private IEnumerator<YieldInstruction> LoadAnotherUI(){
+    private IEnumerator<YieldInstruction> LoadAnotherUI(DisplayStyle displayStyle, bool isInvoke = true){
         float time = 0.5f;
         while (time > 0){
             time -= Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
-        OnGameStart?.Invoke();
-        _contentsContainer.style.display = DisplayStyle.None;
+        if(isInvoke) OnGameStart?.Invoke();
+        _contentsContainer.style.display = displayStyle;
     }
 
+    public void Visible()
+    {
+        StartCoroutine(LoadAnotherUI(DisplayStyle.Flex, false));
+        _contentsContainer.RemoveFromClassList("mainDisappear");
+    }
+
+    public void Disappear()
+    {
+        _contentsContainer.AddToClassList("mainDisappear");
+        StartCoroutine(LoadAnotherUI(DisplayStyle.None));
+    }
 }
 
