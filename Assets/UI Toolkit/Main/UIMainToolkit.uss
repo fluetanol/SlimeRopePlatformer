@@ -12,7 +12,7 @@
     border-bottom-color: rgba(0, 0, 0, 0);
 }
 
-.mainDefault {
+.default {
     flex-grow: 1;
     position: relative;
     overflow: visible;
@@ -28,7 +28,7 @@
     transition-property: all;
 }
 
-.mainDisappear {
+.invisible {
     opacity: 0;
     transition-duration: 0.8s;
     transition-property: opacity;

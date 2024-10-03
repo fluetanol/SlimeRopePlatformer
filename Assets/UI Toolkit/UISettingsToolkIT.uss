@@ -1,0 +1,16 @@
+.custom-label {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(68, 138, 255);
+}
+
+.default {
+    opacity: 1;
+    transition-duration: 0.7s;
+}
+
+.invisible {
+    opacity: 0;
+    transition-duration: 0.7s;
+    display: none;
+}

@@ -2,24 +2,23 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.UIElements.Experimental;
 
-public interface IVisibleUI
-{
+
+public interface IVisibleUI{
     void Visible();
     void Disappear();
 }
 
+public interface ISceneMove{
+    IEnumerator<YieldInstruction> LoadSceneProgress(AsyncOperation asyncOP);
+}
 
-public class StageUI : MonoBehaviour, IVisibleUI
+public class StageUI : UIDocumentMonoBehavior, IVisibleUI, ILoadAnotherUI, ISceneMove
 {
-    private IVisibleUI _mainVisibleUI;
-
-    private UIDocument uiDoc;
-    private VisualElement _root;
     private ScrollView _scrollView;
     private VisualElement contentContainer; // 스크롤뷰의 컨텐츠 영역 참조
     private List<GroupBox> scrollViewBoxes;
-
     private ProgressBar _progressBar;
     private Button _backButton;
 
@@ -29,30 +28,11 @@ public class StageUI : MonoBehaviour, IVisibleUI
     float maxScrollOffsetX;                // 스크롤 가능한 최대 오프셋
     
     private Scroller scroller;
-
-    public event Action OnGameStart;
-
-
-    void Awake()
-    {
-        GetObjectComponent();
-        GetUIComponent();
-    }
-
-    void OnEnable() {
-        OnGameStart += _mainVisibleUI.Visible;
-        _backButton.clicked += OnBackButton;
-    }
+    //public event Action OnGameStart;
 
 
-    void GetObjectComponent() {
-        uiDoc = GetComponent<UIDocument>();
-        _mainVisibleUI = FindObjectOfType<MainUI>();
-    }
 
-    void GetUIComponent(){
-        _root = uiDoc.rootVisualElement;
-
+    protected override void SetUIComponent(){
         VisualElement titleElement = _root.Q<VisualElement>("TitleElement");
         VisualElement stageElement = _root.Q<VisualElement>("StageElement");
 
@@ -63,17 +43,17 @@ public class StageUI : MonoBehaviour, IVisibleUI
         scrollViewBoxes = contentContainer.Query<GroupBox>().ToList();
     }
 
-
-    void Start()
+    protected override void SetUIEvent()
     {
-        // 레이아웃이 변경되었을 때 또는 처음 설정될 때 호출
+        _backButton.clicked += OnBackButton;
+        SetScrollViewEvent();
+    }
+
+    private void SetScrollViewEvent(){
         contentContainer.RegisterCallback<GeometryChangedEvent>(evt =>
         {
             // 스크롤 가능한 범위 계산
             maxScrollOffsetX = Mathf.Max(0, scroller.highValue);
-            for(int i=0; i< scrollViewBoxes.Count; i++){
-                scrollViewBoxes[i].style.opacity = 1 - ((float)i / 6.0f);
-            }
             Debug.Log($"Max scroll offset: {maxScrollOffsetX}"); // 값이 제대로 나오는지 확인
         });
 
@@ -119,39 +99,38 @@ public class StageUI : MonoBehaviour, IVisibleUI
         });
     }
 
-    void OnBackButton(){
-        Disappear();
-        print("!");
-        OnGameStart?.Invoke();
-    }
 
+    void OnBackButton(){
+        UITreeBehavior._uiTree.SetPrevUINode(0);
+        Disappear();
+        UITreeBehavior.GetCurrentNode().Visible();
+    }
 
     public void Visible(){
         VisualElement a = _root.Q<VisualElement>("VisualElementContainer");
-        a.RemoveFromClassList("disappear");
+        a.RemoveFromClassList(UIElementOperation.INVISIBLE);
     }
 
     public void Disappear(){
         VisualElement a = _root.Q<VisualElement>("VisualElementContainer");
-        a.AddToClassList("disappear");
+        a.AddToClassList(UIElementOperation.INVISIBLE);
     }
 
+    public IEnumerator<YieldInstruction> LoadAnotherUI(){
+        throw new NotImplementedException();
+    }
 
-
-
-
-/*
-    private IEnumerator<YieldInstruction> LoadSceneProgress(AsyncOperation asyncOP)
+    public IEnumerator<YieldInstruction> LoadSceneProgress(AsyncOperation asyncOP)
     {
         asyncOP.allowSceneActivation = false;
-        progressBar.visible = true;
+        _progressBar.visible = true;
         Easing.Linear(3);
         while (!asyncOP.isDone)
         {
-            progressBar.value = asyncOP.progress * 100;
+            _progressBar.value = asyncOP.progress * 100;
             if (asyncOP.progress >= 0.9f)
             {
-                progressBar.value += 5;
+                _progressBar.value += 5;
                 yield return new WaitForSeconds(0.5f);
                 asyncOP.allowSceneActivation = true;
 
@@ -159,6 +138,6 @@ public class StageUI : MonoBehaviour, IVisibleUI
             yield return null;
         }
     }
-    */
+ 
 }
 //https://discussions.unity.com/t/scrollview-with-drag-scrolling/861606/4 참고
