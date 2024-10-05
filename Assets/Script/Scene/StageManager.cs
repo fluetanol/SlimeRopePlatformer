@@ -9,13 +9,7 @@ public class StageManager : SingletonMonobehavior<StageManager>
     [SerializeField] private int XclusterNum = 0;
     [SerializeField] private int YclusterNum = 0;
 
-    StageDatabase stageDatabase;
     int stageNum = 0;
-
-    new void Awake(){
-        base.Awake();
-    
-    }
 
     public int AddXcluster() => XclusterNum++;
     public int AddYcluster() => YclusterNum++;

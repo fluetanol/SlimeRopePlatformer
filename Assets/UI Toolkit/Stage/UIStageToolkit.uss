@@ -30,3 +30,56 @@
     transition-duration: 0.8s;
     transition-timing-function: ease;
 }
+
+.unity-text-element {
+}
+
+.stage-button {
+    width: 100%;
+    height: 75%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 0;
+    border-left-width: 3px;
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+}
+
+.stage-button-world1{
+    background-color: rgba(225, 255, 210, 1);
+}
+
+.stage-button-world1:hover {
+    background-color: rgba(225, 255, 210, 0.7);
+
+}
+
+.stage-button-world1:active {
+    background-color: rgba(200, 255, 210, 0.85);
+}
+
+
+.stage-button-world2{
+    background-color: rgba(255, 245, 175, 1);
+}
+
+.stage-button-world2:hover {
+    background-color: rgba(255, 245, 175, 0.7);
+
+}
+
+.stage-button-world2:active {
+    background-color: rgba(255, 245, 175, 0.85);
+
+
+}

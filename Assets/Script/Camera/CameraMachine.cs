@@ -32,6 +32,9 @@ public class CameraMachine : MonoBehaviour
         screenWidth = Camera.main.orthographicSize * 2 * Camera.main.aspect;        //알아 두면 좋을 스크린 식
         screenHeight = Camera.main.orthographicSize * 2;
     }
+    void Start(){
+        Target = FindObjectOfType<PlayerInputManager>().transform;
+    }
 
     void Update(){
         if(_cameraState == ECameraState.Follow) {

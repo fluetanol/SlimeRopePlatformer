@@ -11,6 +11,7 @@ public class UITreeBehavior : MonoBehaviour
         InitializeTree();
         SetMainUIChild();
         SetStageUIChild();
+        SetProgressUIChild();
         SetGameSettingUIChild();
     }
 
@@ -39,11 +40,18 @@ public class UITreeBehavior : MonoBehaviour
 
 
     private void SetStageUIChild(){
-        //_uiTree.SetNextUINode(0);
-        // var currentNode = _uiTree.GetCurrentUINode();
+        _uiTree.SetNextUINode(0);
+        var currentNode = _uiTree.GetCurrentUINode();
+        var progressNode = MakeUINode<ProgressUI>(currentNode, "ProgressUI");
+        currentNode.AddNextUINode(progressNode);
         _uiTree.SetRootUINode();
     }
 
+    private void SetProgressUIChild(){
+        //_uiTree.SetNextUINode(1);
+       // var currentNode = _uiTree.GetCurrentUINode();
+        _uiTree.SetRootUINode();
+    }
 
     private void SetGameSettingUIChild(){
         //_uiTree.SetNextUINode(1);

@@ -1,0 +1,26 @@
+.custom-label {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(68, 138, 255);
+}
+
+.default {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(43, 42, 39, 0.84);
+    justify-content: flex-end;
+    padding-top: 1%;
+    padding-right: 1%;
+    padding-bottom: 1%;
+    padding-left: 1%;
+    transition-duration: 1s;
+}
+
+.invisible {
+    opacity: 0;
+    display: flex;
+    transition-duration: 1s;
+    visibility: hidden;
+    overflow: visible;
+}

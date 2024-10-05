@@ -14,23 +14,17 @@ public interface ISceneMove{
     IEnumerator<YieldInstruction> LoadSceneProgress(AsyncOperation asyncOP);
 }
 
-public class StageUI : UIDocumentMonoBehavior, IVisibleUI, ILoadAnotherUI, ISceneMove
+public class StageUI : UIDocumentMonoBehavior, IVisibleUI, ILoadAnotherUI
 {
     private ScrollView _scrollView;
     private VisualElement contentContainer; // 스크롤뷰의 컨텐츠 영역 참조
     private List<GroupBox> scrollViewBoxes;
-    private ProgressBar _progressBar;
     private Button _backButton;
-
 
     private Vector2 startPointerPosition;  // 마우스 클릭 시작 위치
     private bool isDragging = false;       // 드래그 상태 확인
     float maxScrollOffsetX;                // 스크롤 가능한 최대 오프셋
-    
     private Scroller scroller;
-    //public event Action OnGameStart;
-
-
 
     protected override void SetUIComponent(){
         VisualElement titleElement = _root.Q<VisualElement>("TitleElement");
@@ -46,7 +40,15 @@ public class StageUI : UIDocumentMonoBehavior, IVisibleUI, ILoadAnotherUI, IScen
     protected override void SetUIEvent()
     {
         _backButton.clicked += OnBackButton;
+        SetStageButtonEvent();
         SetScrollViewEvent();
+    }
+
+    private void SetStageButtonEvent(){
+        for(int i=0; i<scrollViewBoxes.Count; i++){
+            int temp = i;
+            scrollViewBoxes[i].Q<Button>().clicked += () => OnStageButton(temp);
+        }
     }
 
     private void SetScrollViewEvent(){
@@ -80,7 +82,6 @@ public class StageUI : UIDocumentMonoBehavior, IVisibleUI, ILoadAnotherUI, IScen
                 _scrollView.scrollOffset = newScrollOffset;
                 // 새로운 마우스 위치를 시작점으로 갱신
                 startPointerPosition = evt.position;
-
             }
             evt.StopPropagation();
         });
@@ -100,6 +101,13 @@ public class StageUI : UIDocumentMonoBehavior, IVisibleUI, ILoadAnotherUI, IScen
     }
 
 
+    void OnStageButton(int k){
+        print("stage : " + k);
+        UITreeBehavior._uiTree.SetNextUINode(0);
+        UITreeBehavior.GetCurrentNode().Visible();
+    }
+
+
     void OnBackButton(){
         UITreeBehavior._uiTree.SetPrevUINode(0);
         Disappear();
@@ -116,27 +124,15 @@ public class StageUI : UIDocumentMonoBehavior, IVisibleUI, ILoadAnotherUI, IScen
         a.AddToClassList(UIElementOperation.INVISIBLE);
     }
 
-    public IEnumerator<YieldInstruction> LoadAnotherUI(){
-        throw new NotImplementedException();
-    }
-
-    public IEnumerator<YieldInstruction> LoadSceneProgress(AsyncOperation asyncOP)
+    public IEnumerator<YieldInstruction> LoadAnotherUI()
     {
-        asyncOP.allowSceneActivation = false;
-        _progressBar.visible = true;
-        Easing.Linear(3);
-        while (!asyncOP.isDone)
+        float time = 0.5f;
+        while (time > 0)
         {
-            _progressBar.value = asyncOP.progress * 100;
-            if (asyncOP.progress >= 0.9f)
-            {
-                _progressBar.value += 5;
-                yield return new WaitForSeconds(0.5f);
-                asyncOP.allowSceneActivation = true;
-
-            }
-            yield return null;
+            time -= Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
         }
+        UITreeBehavior.GetCurrentNode().Visible();
     }
  
 }
