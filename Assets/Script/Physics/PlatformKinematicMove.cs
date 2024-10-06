@@ -102,7 +102,7 @@ public class PlatformKinematicMove : KinematicPhysics, IPlatformVelocity
     public Vector2 GetVerticalPlatformVelocity() => Move.MoveBaseVerticalVelocity();
 
     private void OnDrawGizmos() {
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.cyan;
         foreach (Transform t in l_pathTransform){
             Gizmos.DrawSphere(t.position, 0.5f);
         }
