@@ -1,15 +1,41 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class InterfaceFactory
+[Serializable]
+public class PlayerFactory
 {
+    Dictionary<string, Move> _moveDictionary = new Dictionary<string, Move>();
+    Dictionary<string, AttackData> _attackDataDictionary = new Dictionary<string, AttackData>();
 
-    void Create(string s)
-    {
-        if (s == "normalMove")
-        {
+    public PlayerFactory(){
+        _moveDictionary.Add("AccelMove", new PlayerAccelMove());
 
-        }
+        _attackDataDictionary.Add("AttackData", new AttackData());
     }
+
+    public void Create(ref Move move, ref AttackData attackData,EPlayerElementalType type){
+        //if(_moveDictionary.ContainsKey(key)){
+         //   move = _moveDictionary[key];
+        //}
+        //if(_attackDataDictionary.ContainsKey(key)){
+         //   attackData = _attackDataDictionary[key];
+        //}
+
+    }
+
+
+    public Move GetMove(string key){
+        if(_moveDictionary.ContainsKey(key)){
+            return _moveDictionary[key];
+        }
+        return null;
+    }
+
+    public AttackData GetAttackData(string key){
+        if(_attackDataDictionary.ContainsKey(key)){
+            return _attackDataDictionary[key];
+        }
+        return new AttackData();
+    }
+
 }

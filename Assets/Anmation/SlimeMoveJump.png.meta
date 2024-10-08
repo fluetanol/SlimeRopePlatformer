@@ -1,0 +1,1020 @@
+fileFormatVersion: 2
+guid: 4d87dffa4b726f94c9ae8cf3ead57113
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SlimeMoveJump_0
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 0
+        width: 111
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e39d5179d1d3fd14a98b8e95ac663b7b
+      internalID: -1672104725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_1
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 0
+        width: 112
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e85c1e8e6e62234b9740bc22ff6a363
+      internalID: 133184126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_2
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 0
+        width: 112
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 995d3912e97b162498e5f4d0991a71a0
+      internalID: 1233674631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_3
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 0
+        width: 119
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40c3100212e4b5e48bd9a948da9bfaca
+      internalID: -940219080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_4
+      rect:
+        serializedVersion: 2
+        x: 514
+        y: 0
+        width: 123
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35138a48f7a458840b5e0f00dbd4ec13
+      internalID: 2139927045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_5
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 125
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6999c260c5e74a84fb41e76738dde1df
+      internalID: -1624606174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_6
+      rect:
+        serializedVersion: 2
+        x: 773
+        y: 0
+        width: 117
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b003a3ce4df2f51489561e10e305a306
+      internalID: 1295693541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_7
+      rect:
+        serializedVersion: 2
+        x: 899
+        y: 0
+        width: 117
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f242defe6aa5eea41b452cbf2fb0e4d1
+      internalID: -789032446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_8
+      rect:
+        serializedVersion: 2
+        x: 1031
+        y: 0
+        width: 113
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fcf4722229a1d1e4ab8ea8f290179eb1
+      internalID: 1383294130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_9
+      rect:
+        serializedVersion: 2
+        x: 1161
+        y: 0
+        width: 109
+        height: 111
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acdbb9d0b34e39642b5466c529db3752
+      internalID: -1399188935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_10
+      rect:
+        serializedVersion: 2
+        x: 1295
+        y: 0
+        width: 98
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86902b8386d10e1449dcb670cd0ec7b2
+      internalID: -1003185800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_11
+      rect:
+        serializedVersion: 2
+        x: 1429
+        y: 0
+        width: 89
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a6f74eed757ffc4aa89c932c57ac2de
+      internalID: 237030182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_12
+      rect:
+        serializedVersion: 2
+        x: 1559
+        y: 0
+        width: 82
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05c56db24cd9d5d42b324d32e7408067
+      internalID: 1166265472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_13
+      rect:
+        serializedVersion: 2
+        x: 1690
+        y: 0
+        width: 74
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3878aa839cc1d54449eeeb1da8c7967f
+      internalID: 616042000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_14
+      rect:
+        serializedVersion: 2
+        x: 1820
+        y: 0
+        width: 66
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92b390f466e314c478c0ae88896fcd24
+      internalID: -1372842360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_15
+      rect:
+        serializedVersion: 2
+        x: 1946
+        y: 0
+        width: 74
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03dd517f4af015c4f943cd54d7be7534
+      internalID: 2067854946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_16
+      rect:
+        serializedVersion: 2
+        x: 2072
+        y: 0
+        width: 82
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1cb12479de87c847868a475c18bf871
+      internalID: -1645070476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_17
+      rect:
+        serializedVersion: 2
+        x: 2195
+        y: 0
+        width: 89
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a65ef3f915ee14a4d82d73fce267e321
+      internalID: 1185504508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_18
+      rect:
+        serializedVersion: 2
+        x: 2317
+        y: 0
+        width: 100
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed02a055a1f177f42b194328395efe85
+      internalID: 172114709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_19
+      rect:
+        serializedVersion: 2
+        x: 2441
+        y: 0
+        width: 107
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bd2848292be9334a8a96f8e1640d158
+      internalID: 491954623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_20
+      rect:
+        serializedVersion: 2
+        x: 2563
+        y: 0
+        width: 116
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62597e5ea393cb446b422065f5e60e3f
+      internalID: 136708245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_21
+      rect:
+        serializedVersion: 2
+        x: 2702
+        y: 0
+        width: 100
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fffb08df5d3770744b86e83eb6936b08
+      internalID: 69916025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_22
+      rect:
+        serializedVersion: 2
+        x: 2835
+        y: 0
+        width: 90
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: afd82691ef3719c41b351f9ef8980a31
+      internalID: 1575256454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_23
+      rect:
+        serializedVersion: 2
+        x: 2969
+        y: 0
+        width: 79
+        height: 105
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99f5cff3beaf3cb48bbd498e8da86777
+      internalID: 473723982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_24
+      rect:
+        serializedVersion: 2
+        x: 3102
+        y: 0
+        width: 70
+        height: 111
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08054481cc56ad349945350364111123
+      internalID: -261688761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_25
+      rect:
+        serializedVersion: 2
+        x: 3230
+        y: 0
+        width: 71
+        height: 110
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc154214833acd340b9d50f9a38de759
+      internalID: -162968635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_26
+      rect:
+        serializedVersion: 2
+        x: 3353
+        y: 0
+        width: 78
+        height: 106
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b1b698ad40746b4399a9cce3e16d7bd
+      internalID: 1699642635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_27
+      rect:
+        serializedVersion: 2
+        x: 3477
+        y: 0
+        width: 89
+        height: 102
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d716409c00003a647a6355bfa9333161
+      internalID: -1452034272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_28
+      rect:
+        serializedVersion: 2
+        x: 3606
+        y: 0
+        width: 88
+        height: 103
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d88d42d14487b7f43a585d2f8b7640d8
+      internalID: 1580049050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_29
+      rect:
+        serializedVersion: 2
+        x: 3728
+        y: 0
+        width: 99
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f6873cf95a290744ba7e84e342545ea
+      internalID: -1381600732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_30
+      rect:
+        serializedVersion: 2
+        x: 3849
+        y: 0
+        width: 112
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b470c78e6962c6649a0f2c408a50fcf0
+      internalID: 871927956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_31
+      rect:
+        serializedVersion: 2
+        x: 3972
+        y: 0
+        width: 116
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8e11db65d9d0d542b0bff4dbeb7dc09
+      internalID: 1181663322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_32
+      rect:
+        serializedVersion: 2
+        x: 4099
+        y: 0
+        width: 123
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b99cd7bb8af4d9e469ff2a7ff7703f56
+      internalID: -1427833338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_33
+      rect:
+        serializedVersion: 2
+        x: 4479
+        y: 0
+        width: 128
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b03da394af9ade24f81679f64acea0f6
+      internalID: 414536898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_34
+      rect:
+        serializedVersion: 2
+        x: 4221
+        y: 0
+        width: 129
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ae1c413897bfdb4e8e8e6c75cf48692
+      internalID: -622569604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_35
+      rect:
+        serializedVersion: 2
+        x: 4351
+        y: 0
+        width: 128
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d214f963e1bb0854abb8a15ea1df3bc9
+      internalID: 513303559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_36
+      rect:
+        serializedVersion: 2
+        x: 4735
+        y: 0
+        width: 128
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4b2894fc7fd6db4699b3ff823e97e2e
+      internalID: -2094752705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_37
+      rect:
+        serializedVersion: 2
+        x: 4862
+        y: 0
+        width: 127
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 32fad2488e8266a4fba9cedbe5061ef4
+      internalID: 1779766130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_38
+      rect:
+        serializedVersion: 2
+        x: 4992
+        y: 0
+        width: 131
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 395a797f97f08b44890e763435e28b9a
+      internalID: -369200507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeMoveJump_39
+      rect:
+        serializedVersion: 2
+        x: 4608
+        y: 0
+        width: 127
+        height: 112
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f18dbc8cfa952846adf447bae63c1ca
+      internalID: 2098988888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      SlimeMoveJump_0: -1672104725
+      SlimeMoveJump_1: 133184126
+      SlimeMoveJump_10: -1003185800
+      SlimeMoveJump_11: 237030182
+      SlimeMoveJump_12: 1166265472
+      SlimeMoveJump_13: 616042000
+      SlimeMoveJump_14: -1372842360
+      SlimeMoveJump_15: 2067854946
+      SlimeMoveJump_16: -1645070476
+      SlimeMoveJump_17: 1185504508
+      SlimeMoveJump_18: 172114709
+      SlimeMoveJump_19: 491954623
+      SlimeMoveJump_2: 1233674631
+      SlimeMoveJump_20: 136708245
+      SlimeMoveJump_21: 69916025
+      SlimeMoveJump_22: 1575256454
+      SlimeMoveJump_23: 473723982
+      SlimeMoveJump_24: -261688761
+      SlimeMoveJump_25: -162968635
+      SlimeMoveJump_26: 1699642635
+      SlimeMoveJump_27: -1452034272
+      SlimeMoveJump_28: 1580049050
+      SlimeMoveJump_29: -1381600732
+      SlimeMoveJump_3: -940219080
+      SlimeMoveJump_30: 871927956
+      SlimeMoveJump_31: 1181663322
+      SlimeMoveJump_32: -1427833338
+      SlimeMoveJump_33: 414536898
+      SlimeMoveJump_34: -622569604
+      SlimeMoveJump_35: 513303559
+      SlimeMoveJump_36: -2094752705
+      SlimeMoveJump_37: 1779766130
+      SlimeMoveJump_38: -369200507
+      SlimeMoveJump_39: 2098988888
+      SlimeMoveJump_4: 2139927045
+      SlimeMoveJump_5: -1624606174
+      SlimeMoveJump_6: 1295693541
+      SlimeMoveJump_7: -789032446
+      SlimeMoveJump_8: 1383294130
+      SlimeMoveJump_9: -1399188935
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

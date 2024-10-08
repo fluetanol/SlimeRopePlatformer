@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -18,32 +17,32 @@ public class CameraMachine : MonoBehaviour
 
     public ECameraState _cameraState = ECameraState.Follow;
     public ECameraMove _cameraMove = ECameraMove.Smooth;
-    public Transform Target;
+    public Transform Target =null;
 
     [SerializeField][Range(10, -10)] private float yOffset = 2;
     [SerializeField] [Range(0, 15)] private float cameraOrthoGrahicSize = 10;
     [SerializeField] private float _cameraLerpSpeed = 0.5f;
     //[SerializeField] private float _cameraSpeed = 0.5f;
     private float screenWidth, screenHeight;
-    private IGetPlayerStateData _playerStateData;
-
 
     void Awake(){
         screenWidth = Camera.main.orthographicSize * 2 * Camera.main.aspect;        //알아 두면 좋을 스크린 식
         screenHeight = Camera.main.orthographicSize * 2;
     }
+
     void Start(){
-        Target = FindObjectOfType<PlayerInputManager>().transform;
+        if(Target == null) {
+            Target = GameObject.FindWithTag("Player")?.transform;
+        }
     }
 
     void Update(){
-        if(_cameraState == ECameraState.Follow) {
+        if(_cameraState == ECameraState.Follow && Target!=null) {
             CameraMove(_cameraMove);
             CameraPlayerOver();
         }
         Camera.main.orthographicSize = cameraOrthoGrahicSize;
     }
-
 
     void CameraMove(in ECameraMove cameraMoveMode){
         Vector2 nextPosition = Vector2.zero;
@@ -55,7 +54,6 @@ public class CameraMachine : MonoBehaviour
         if(IsCameraYBoundaries(screenHeight, nextPosition)) nextPosition.y = transform.position.y;
         transform.position = new Vector3(nextPosition.x, nextPosition.y, -10);
     }
-
 
     void CameraPlayerOver(){
         (Vector2, Vector2) xposArrange = StageManager.Instance.GetCurrentXBoundaries();

@@ -12,7 +12,6 @@ public abstract class KinematicPhysics : MonoBehaviour
     public IPlatformDirection IplatformDirection;
     [SerializeField] private bool isCollisionContainMe = false;
     
-
     protected Vector2 _horizontalDirection;
     protected Vector2 _verticalDirection;
     protected Vector2 _jumpDirection;

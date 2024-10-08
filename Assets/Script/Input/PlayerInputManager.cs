@@ -1,5 +1,4 @@
-
-using UnityEditor.Experimental.GraphView;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +12,10 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
         base.Awake();
         PlayerInputInitialize();
         ComponentInitialize();
+    }
+
+    private void Update() {
+        OnCursor();
     }
 
     void OnEnable() => _playerControls.Enable();
@@ -39,8 +42,7 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
 
     public static void SetClickAction(IInputMouse inputMouse){
         _playerControls.Locomotion.Click.started += inputMouse.OnClick;
-        _playerControls.Locomotion.Cursor.performed += inputMouse.OnCursor;
-    
+       // _playerControls.Locomotion.Cursor.performed += inputMouse.OnCursor;
     }
 
     //움직일 시
@@ -85,25 +87,29 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
         }
     }
     
-    public void OnCursor(InputAction.CallbackContext ctx){
-        Vector2 position = ctx.ReadValue<Vector2>();
+    
+    public void OnCursor(){
+        Vector2 position = _playerControls.Locomotion.Cursor.ReadValue<Vector2>();
         Vector2 pos = Camera.main.ScreenToWorldPoint(position);
         _playerData.GetPlayerInputState().CursorPosition = pos;
 
         Vector2 rayVector = _playerData.GetPlayerInputState().CursorPosition - (Vector2)transform.position;
         Vector2 direction = rayVector.normalized;
         float distance = _playerData.GetAttackData().attackRange > rayVector.magnitude ? rayVector.magnitude : _playerData.GetAttackData().attackRange;
-        
-        
+
+
         PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
-        if (stateMachine._playerBehaviourState != EPlayerBehaviourState.Attack){
+        if (stateMachine._playerBehaviourState != EPlayerBehaviourState.Attack)
+        {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance);
-            if (hit.collider != null){
+            if (hit.collider != null)
+            {
                 _playerData.GetAttackData().attackPosition = hit.point;
-            }else{
+            }
+            else
+            {
                 _playerData.GetAttackData().attackPosition = (Vector2)transform.position + direction * distance;
             }
         }
     }
-    
 }

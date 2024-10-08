@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab1e83eedc4cfe949a4197491db47170, type: 3}
+  m_Name: ScriptableDatabase
+  m_EditorClassIdentifier: 
+  playerPhysics:
+    HorizontalSpeed: 12
+    Gravity: 15
+    JumpForce: 15
+    AttackForce: 30
+    FallingClamp: 0
+    jumpCount: 1
+    collisionCount: 3
+    acceltime: 0.25
+    stoptime: 0.25
+  playerComponent:
+    CapsuleCollider2D: {fileID: 0}
+    Collider2D: {fileID: 0}
+    Rigidbody2D: {fileID: 0}
+    SpriteRenderer: {fileID: 0}
+    Animator: {fileID: 0}

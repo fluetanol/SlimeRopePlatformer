@@ -3,12 +3,10 @@ using UnityEngine;
 
 public class PlatformCollision : ISeperateCollision
 {
-    private BoxCollider2D collider;
     private Vector2 size;
 
-    public PlatformCollision(BoxCollider2D collider, Vector2 size)
+    public PlatformCollision(Vector2 size)
     {
-        this.collider = collider;
         this.size = size;
     }
 
@@ -72,7 +70,7 @@ public class PlatformKinematicMove : KinematicPhysics, IPlatformVelocity
 
         BoxCollider2D collider = _PlatformComponent.Collider2D as BoxCollider2D;
         Vector2 size = collider.size * transform.localScale;
-        ISeperateCollision = new PlatformCollision(collider, size);
+        ISeperateCollision = new PlatformCollision(size);
 
     }
 
@@ -102,7 +100,7 @@ public class PlatformKinematicMove : KinematicPhysics, IPlatformVelocity
     public Vector2 GetVerticalPlatformVelocity() => Move.MoveBaseVerticalVelocity();
 
     private void OnDrawGizmos() {
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.cyan;
         foreach (Transform t in l_pathTransform){
             Gizmos.DrawSphere(t.position, 0.5f);
         }
