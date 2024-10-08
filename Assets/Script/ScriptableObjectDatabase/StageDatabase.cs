@@ -10,7 +10,7 @@ public struct StageData{
 }
 
 
-[CreateAssetMenu(fileName = "StageDatabase", menuName = "Database/StageDatabase")]
+[CreateAssetMenu(fileName = "ScriptableDatabase", menuName = "ScriptableObject/StageDatabase")]
 public class StageDatabase : ScriptableObject{
     public List<StageData> stageDatabase = new List<StageData>();
 }

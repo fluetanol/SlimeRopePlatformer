@@ -9,5 +9,5 @@ public interface IInputMove
 
 public interface IInputMouse{
     public void OnClick(InputAction.CallbackContext ctx);
-    public void OnCursor(InputAction.CallbackContext ctx);
+    public void OnCursor();
 }

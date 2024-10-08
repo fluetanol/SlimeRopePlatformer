@@ -1,3 +1,4 @@
+
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -66,14 +67,14 @@ public class PlayerKinematicMove : KinematicPhysics
 {
     private IGetPlayerData _playerData;
     private IGetPlayerStateData _playerStateData;
-    private ICollisionResult IcollisionResult;
 
+    private ICollisionResult IcollisionResult;
     private IAttackAction IAttackAction;
     private IRopeResult IRopeResult;
     private ISetJumpValue IsetJumpValue;
+
     private float RopeForce;
     private float JumpForce;
-    //public event Action OnStateChange;
 
 
     //just for debugging....
@@ -119,7 +120,7 @@ public class PlayerKinematicMove : KinematicPhysics
         PreCollisionFixedUpdate(currentPosition);
         AttackStateUpdate(currentPosition);
 
-        PreVelocityFixedUpdate();
+        VelocityFixedUpdate();
         PostCollisionFixedUpdate(currentPosition);
         PostVelocityFixedUpdate(currentPosition);
 
@@ -257,11 +258,7 @@ public class PlayerKinematicMove : KinematicPhysics
     /// <summary>
     /// 충돌 전, 현재 상태에 따른 캐릭터의 물리적 움직임 계산
     /// </summary>
-    /// <param name="moveHorizontal"></param>
-    /// <param name="moveVertical"></param>
-    /// <param name="basehorizontal"></param>
-    /// <param name="baseVertical"></param>
-    private void PreVelocityFixedUpdate()
+    private void VelocityFixedUpdate()
     {
         ref PhysicsStats _playerPhysicsStats = ref _playerData.GetPlayerPhysicsStats();
         ref InputState _playerInputState = ref _playerData.GetPlayerInputState();

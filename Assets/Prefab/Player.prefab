@@ -147,33 +147,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b689bb294a47504cb3f6213f53ab204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPhysicsStats:
-    HorizontalSpeed: 12
-    Gravity: 15
-    JumpForce: 15
+  _playerStats:
+    HorizontalSpeed: 15
+    acceltime: 0.15
+    stoptime: 0.2
+    Gravity: 9
+    JumpForce: 10
     AttackForce: 30
     FallingClamp: 0
     jumpCount: 1
-    collisionCount: 3
-    acceltime: 0.25
-    stoptime: 0.25
-  _playerInputState:
-    PlayerPosition: {x: 0, y: 0}
-    MoveDirection: {x: 0, y: 0}
-    GravityDirection: {x: 0, y: 0}
-    CursorPosition: {x: 0, y: 0}
-    IsJump: 0
+    collisionCount: 0
   _playerComponent:
     CapsuleCollider2D: {fileID: 0}
     Collider2D: {fileID: 0}
     Rigidbody2D: {fileID: 0}
     SpriteRenderer: {fileID: 0}
     Animator: {fileID: 0}
+  _playerInputState:
+    PlayerPosition: {x: 0, y: 0}
+    MoveDirection: {x: 0, y: 0}
+    GravityDirection: {x: 0, y: 0}
+    CursorPosition: {x: 0, y: 0}
+    Isjump: 0
   _attackData:
     attackDirection: {x: 0, y: 0}
     attackPosition: {x: 0, y: 0}
     attackRange: 10
-    attackSpeed: 1
+    attackSpeed: 30
   _stateMachine:
     _playerMoveState: 0
     _playerLandState: 2
@@ -360,7 +360,7 @@ SpriteRenderer:
   m_SortingLayerID: 931350115
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1343150436, guid: e83f2ec96dc0229419de9ad31a53a61f, type: 3}
+  m_Sprite: {fileID: -1672104725, guid: 4d87dffa4b726f94c9ae8cf3ead57113, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

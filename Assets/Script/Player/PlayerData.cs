@@ -48,9 +48,10 @@ public interface IGetPlayerStateData{
 
 public class PlayerData : MonoBehaviour, IGetPlayerData, IGetPlayerStateData
 {
-    [SerializeField] private PhysicsStats _playerPhysicsStats;
-    [SerializeField] private InputState _playerInputState;
+    [Header("Player Data")]
+    [SerializeField] private PhysicsStats _playerStats;
     [SerializeField] private PlayerComponent _playerComponent;
+    [SerializeField] private InputState _playerInputState;
     [SerializeField] private AttackData _attackData;
     [SerializeField] private PlayerStateMachine _stateMachine;
 
@@ -80,12 +81,9 @@ public class PlayerData : MonoBehaviour, IGetPlayerData, IGetPlayerStateData
 
         _playerComponent.Animator = 
         _playerComponent.Animator == null ? GetComponentInChildren<Animator>(true) : _playerComponent.Animator;
-    
-
-
     }
 
-    public ref PhysicsStats GetPlayerPhysicsStats() => ref _playerPhysicsStats;
+    public ref PhysicsStats GetPlayerPhysicsStats() => ref _playerStats;
 
     public ref InputState GetPlayerInputState() => ref _playerInputState;
 
