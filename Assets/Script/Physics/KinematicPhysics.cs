@@ -7,7 +7,10 @@ public abstract class KinematicPhysics : MonoBehaviour
     public ISeperateCollision ISeperateCollision;
     public ISetMoveVelocity IsetMoveVelocity;
     public ISetMoveState IsetMoveState;
-    public ISetDirection IsetDirection;
+    public ISetDirection IsetDirection{
+        get;
+        protected set;
+    }
     public IStepCollision IStepRaycast;
     public IPlatformDirection IplatformDirection;
     [SerializeField] private bool isCollisionContainMe = false;

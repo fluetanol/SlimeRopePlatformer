@@ -17,8 +17,8 @@ public class SpriteAnimationController : MonoBehaviour
     }
 
     void Update(){
-        JumpState();
-        GroundState();
+        //JumpState();
+        //GroundState();
         flip();
         LineRendererState();
     }
@@ -30,15 +30,11 @@ public class SpriteAnimationController : MonoBehaviour
 
     void JumpState(){
         Animator animator = _playerData.GetPlayerComponent().Animator;
-        Animator animator2 = this.GetComponent<Animator>();
         if (_IplayerStateData.GetPlayerStateMachine()._playerMoveState == EPlayerMoveState.Jump) {
             animator.SetBool("isJump", true);
-            animator2.SetBool("isJump", true);
-        
         }
         else {
             animator.SetBool("isJump", false);
-            animator2.SetBool("isJump", false);
         }
     }
 

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 //위와 같은 오브젝트 이름을 지을 것
@@ -41,22 +43,23 @@ public class StageManager : SingletonMonobehavior<StageManager>
         MakePlayer();
     }
 
-
+    //구조체로 반환타입 바꿔버리는게 나을거 같은데요
     private (Transform[], Transform[], Transform) FindStageObject(){
         var mapLines = _stageTransforms[stageNum].Find(StageObjectName.MapLines);
-        var xLines = mapLines.Find(StageObjectName.XPoint).GetComponentsInChildren<Transform>();
-        var yLines = mapLines.Find(StageObjectName.YPoint).GetComponentsInChildren<Transform>();
+        var xLines = mapLines.Find(StageObjectName.XPoint).GetComponentsInChildren<Transform>(false);
+        var yLines = mapLines.Find(StageObjectName.YPoint).GetComponentsInChildren<Transform>(true);
+
         var startPoint = _stageTransforms[stageNum].Find(StageObjectName.StartPoint);
         return (xLines, yLines, startPoint);
     }
 
 
     private void MakeStageInfo(Transform[] Xboundaries, Transform[] Yboundaries, Transform startPoint){
-        foreach(var k in Xboundaries){
-            StageInfo.XBoundaries.Add(k);
+        for(int i=1; i<Xboundaries.Length; i++){
+            StageInfo.XBoundaries.Add(Xboundaries[i]);
         }
-        foreach (var k in Yboundaries){
-            StageInfo.YBoundaries.Add(k);
+        for(int i=1; i<Yboundaries.Length; i++){
+            StageInfo.YBoundaries.Add(Yboundaries[i]);
         }
         StageInfo.StartPoint = startPoint.position;
     }

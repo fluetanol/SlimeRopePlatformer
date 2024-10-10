@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,6 +8,9 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
     public static PlayerControls _playerControls;
     private IGetPlayerData _playerData;
     private IGetPlayerStateData _playerStateData;
+    private ISetState IsetState;
+    private IGetState IgetState;
+
 
     new void Awake(){
         base.Awake();
@@ -29,6 +33,8 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
     private void ComponentInitialize(){
         _playerData = GetComponent<PlayerData>();
         _playerStateData = GetComponent<PlayerData>();
+        IsetState = GetComponent<PlayerStateMachines>();
+        IgetState = GetComponent<PlayerStateMachines>();
         SetClickAction(this);
         SetMoveAction(this);
     }
@@ -47,22 +53,29 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
 
     //움직일 시
     public void OnMove(InputAction.CallbackContext ctx){
-        PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
+        //PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
         _playerData.GetPlayerInputState().MoveDirection = ctx.ReadValue<Vector2>();
 
-        if (stateMachine._playerMoveState != EPlayerMoveState.Jump){
-            stateMachine._playerMoveState = EPlayerMoveState.Run;
+        if(IgetState.GetMoveState() != EPlayerMoveState.Jump){
+            IsetState.SetMoveState(EPlayerMoveState.Run);
         }
+        /*
+        if (stateMachine._playerMoveState != EPlayerMoveState.Jump){
+            IsetState.SetMoveState(EPlayerMoveState.Run);
+            //stateMachine._playerMoveState = EPlayerMoveState.Run;
+        }*/
     }
 
     //점프할 시
     public void OnJump(InputAction.CallbackContext ctx)
     {
-        PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
-        if (stateMachine._playerLandState == EPlayerLandState.Land)
+        //PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
+
+        if (IgetState.GetGroundState() == EPlayerLandState.Land)
         {
             if (ctx.ReadValue<float>() == 1){
-                stateMachine._playerMoveState = EPlayerMoveState.Jump;
+                IsetState.SetMoveState(EPlayerMoveState.Jump);
+                //stateMachine._playerMoveState = EPlayerMoveState.Jump;
             }
         }
     }
@@ -87,7 +100,7 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
         }
     }
     
-    
+    //please call this method in update
     public void OnCursor(){
         Vector2 position = _playerControls.Locomotion.Cursor.ReadValue<Vector2>();
         Vector2 pos = Camera.main.ScreenToWorldPoint(position);
@@ -96,7 +109,6 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
         Vector2 rayVector = _playerData.GetPlayerInputState().CursorPosition - (Vector2)transform.position;
         Vector2 direction = rayVector.normalized;
         float distance = _playerData.GetAttackData().attackRange > rayVector.magnitude ? rayVector.magnitude : _playerData.GetAttackData().attackRange;
-
 
         PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
         if (stateMachine._playerBehaviourState != EPlayerBehaviourState.Attack)
