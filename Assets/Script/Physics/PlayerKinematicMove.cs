@@ -14,14 +14,19 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerStateMachine))]
 public class PlayerKinematicMove : KinematicPhysics
 {
+    public ISetJumpValue IsetJumpValue{
+        get; private set;
+    }
+    public IAttackAction IattackAction{
+        get; private set;
+    }
+
     private IGetPlayerData _playerData;
     private IGetPlayerStateData _playerStateData;
     private ISetState ISetState;
 
     private ICollisionResult IcollisionResult;
-    private IAttackAction IAttackAction;
     private IRopeResult IRopeResult;
-    private ISetJumpValue IsetJumpValue;
 
     private float RopeForce;
     private float JumpForce;
@@ -54,7 +59,7 @@ public class PlayerKinematicMove : KinematicPhysics
 
         RopeAction ropeAction =  new RopeAction(IsetJumpValue, IsetMoveState, _playerData);
         IRopeResult = ropeAction;
-        IAttackAction = ropeAction;
+        IattackAction = ropeAction;
     }
 
     protected override void SettingInitialize()
@@ -98,23 +103,9 @@ public class PlayerKinematicMove : KinematicPhysics
 
     //공격 상태일 때의 업데이트 (이건 인자 때문에 구조적으로 일단 빼야했음)
     private void AttackStateUpdate(Vector2 currentPosition){
-
-        if (_playerStateData.GetPlayerStateMachine()._playerBehaviourState == EPlayerBehaviourState.Attack){
-            IAttackAction.Attack();
-            _playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Jump;
-            _playerData.GetPlayerPhysicsStats().JumpForce = RopeForce;
-
-            if (IRopeResult.IsFinish(currentPosition)){
-                _playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
-            }
-        }
-        if (_playerStateData.GetPlayerStateMachine()._playerBehaviourState == EPlayerBehaviourState.Normal)
+        if (IRopeResult.IsFinish(currentPosition))
         {
-            _playerData.GetPlayerPhysicsStats().JumpForce = JumpForce;
-            if(_playerData.GetPlayerInputState().MoveDirection != Vector2.zero)  
-                IsetJumpValue.SetJumpDirection(Vector2.up);
-            IsetMoveState.SetGravityState(true);
-            IsetMoveState.SetMoveState(true);
+            ISetState.SetBehaviourState(EPlayerBehaviourState.Normal);
         }
     }
 
@@ -166,17 +157,15 @@ public class PlayerKinematicMove : KinematicPhysics
             case ECollisionType.Ground:
                 ISetState.SetGroundState(EPlayerLandState.Land);
                 ISetState.SetMoveState(EPlayerMoveState.Idle);
-                //_playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
-                //_playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
-                //_playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
+                ISetState.SetBehaviourState(EPlayerBehaviourState.Normal);
 
                 IsetDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
                 IsetJumpValue.SetJumpDirection(Vector2.up);
                 break;
+
             case ECollisionType.Wall:
                 ISetState.SetMoveState(EPlayerMoveState.Idle);
-                //_playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
-                //_playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
+                ISetState.SetBehaviourState(EPlayerBehaviourState.Normal);    
                 IsetDirection.SetSlopeDirection(IcollisionResult.GetVerticalNormal());
                 IsetMoveVelocity.SetVerticalVelocity(Vector2.zero);
                 IsetJumpValue.SetJumpDirection(Vector2.up);
@@ -184,7 +173,6 @@ public class PlayerKinematicMove : KinematicPhysics
 
             case ECollisionType.Air:
                 ISetState.SetGroundState(EPlayerLandState.Air);
-                //_playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Air;
                 IsetDirection.SetSlopeDirection(Vector2.up);
                 break;
         }
@@ -196,14 +184,13 @@ public class PlayerKinematicMove : KinematicPhysics
             case ECollisionType.Ground:
                 ISetState.SetGroundState(EPlayerLandState.Land);
                 ISetState.SetMoveState(EPlayerMoveState.Idle);
-                //_playerStateData.GetPlayerStateMachine()._playerLandState = EPlayerLandState.Land;
-                //_playerStateData.GetPlayerStateMachine()._playerMoveState = EPlayerMoveState.Idle;
-                //_playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
+                ISetState.SetBehaviourState(EPlayerBehaviourState.Normal);
+
                 IsetDirection.SetSlopeDirection(IcollisionResult.GetHorizontalNormal());
                 IsetJumpValue.SetJumpDirection(Vector2.up);
                 break;
             case ECollisionType.Wall:
-                //_playerStateData.GetPlayerStateMachine()._playerBehaviourState = EPlayerBehaviourState.Normal;
+                ISetState.SetBehaviourState(EPlayerBehaviourState.Normal);
                 IsetMoveVelocity.SetHorizontalVelocity(Vector2.zero);
                 IsetJumpValue.SetJumpDirection(Vector2.up);
                 break;

@@ -1,24 +1,30 @@
 using UnityEngine;
 
-interface ISetState{
+public interface ISetState{
     void SetMoveState(EPlayerMoveState stateFlag);
     void SetGroundState(EPlayerLandState stateFlag);
+    void SetBehaviourState(EPlayerBehaviourState stateFlag);
 }
 
-interface IGetState{
+public interface IGetState{
     EPlayerMoveState GetMoveState();
     EPlayerLandState GetGroundState();
+    EPlayerBehaviourState GetBehaviourState();
 }
 
 [RequireComponent(typeof(PlayerData))]
 public class PlayerStateMachines : MonoBehaviour, ISetState, IGetState
 {
+    // Need Interface
     private IGetPlayerData IplayerData;
     private ISetMoveState IsetMoveState;
     private ISetDirection IsetDirection;
+    private ISetJumpValue IsetJumpValue;
+    private IAttackAction IattackAction;
 
     private GroundStateFactory _groundStateFactory;
     private MoveStateFactory _moveStateFactory;
+    private BehaviourStateFactory _behaviourStateFactory;
 
 
     State _currentMoveState;
@@ -27,23 +33,34 @@ public class PlayerStateMachines : MonoBehaviour, ISetState, IGetState
     State _currentGroundState;
     public EPlayerLandState _eCurrentGroundState;
 
+    State _currentBehaviourState;
+    public EPlayerBehaviourState _eCurrentBehaviourState;
+
+
     void Awake(){
+        InterfaceServiceLocator.Register<ISetState>(this);
+
+        PlayerKinematicMove playerKinematicMove = GetComponent<PlayerKinematicMove>();
+        IsetMoveState = playerKinematicMove.IsetMoveState;
+        IsetDirection = playerKinematicMove.IsetDirection;
+        IsetJumpValue = playerKinematicMove.IsetJumpValue;
+        IattackAction = playerKinematicMove.IattackAction;
         IplayerData = GetComponent<PlayerData>();
-        IsetMoveState = GetComponent<PlayerKinematicMove>().IsetMoveState;
-        IsetDirection = GetComponent<PlayerKinematicMove>().IsetDirection;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         _groundStateFactory = new GroundStateFactory(IsetMoveState, IplayerData, IsetDirection);
         _moveStateFactory = new MoveStateFactory(IsetMoveState, IplayerData);
+        _behaviourStateFactory = new BehaviourStateFactory(IattackAction, this, IsetMoveState, IsetJumpValue, IplayerData);
 
         _eCurrentMoveState = EPlayerMoveState.Idle;
         _eCurrentGroundState = EPlayerLandState.Air;
+        _eCurrentBehaviourState = EPlayerBehaviourState.Normal;
         
         _currentMoveState = _moveStateFactory.CreateState(_eCurrentMoveState);
         _currentGroundState = _groundStateFactory.CreateState(_eCurrentGroundState);
+        _currentBehaviourState = _behaviourStateFactory.CreateState(_eCurrentBehaviourState);
     }
 
     public void SetMoveState(EPlayerMoveState state){
@@ -51,9 +68,10 @@ public class PlayerStateMachines : MonoBehaviour, ISetState, IGetState
             _currentMoveState.Execute();
             return;
         }
-        _currentMoveState.Exit();
         _eCurrentMoveState = state;
+        _currentMoveState.Exit();
         _currentMoveState = _moveStateFactory.CreateState(state);
+        _currentMoveState.Start();
         _currentMoveState.Execute();
     }
 
@@ -68,13 +86,28 @@ public class PlayerStateMachines : MonoBehaviour, ISetState, IGetState
         _currentGroundState.Execute();
     }
     
-
-    public EPlayerMoveState GetMoveState(){
-        return _eCurrentMoveState;
+    public void SetBehaviourState(EPlayerBehaviourState state){
+        if(_eCurrentBehaviourState == state) {
+            _currentBehaviourState.Execute();
+            return;
+        }
+        _eCurrentBehaviourState = state;
+        _currentBehaviourState.Exit();
+        _currentBehaviourState = _behaviourStateFactory.CreateState(state);
+        _currentBehaviourState.Execute();
     }
 
-    public EPlayerLandState GetGroundState(){
-        return _eCurrentGroundState;
-    }
+    public EPlayerMoveState GetMoveState() => _eCurrentMoveState;
+    
+
+    public EPlayerLandState GetGroundState() => _eCurrentGroundState;
+    
+
+    public EPlayerBehaviourState GetBehaviourState() => _eCurrentBehaviourState;
+    
+
+
+
+
 }
 

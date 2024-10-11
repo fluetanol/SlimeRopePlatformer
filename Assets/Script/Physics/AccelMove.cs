@@ -109,7 +109,6 @@ public sealed class PlayerAccelMove : Move, ISetMoveVelocity, ISetDirection, ISe
 
     public void SetJumpMagnitude(float jumpMagnitude) {}
 
-
     public void SetGravityState(bool isGravity) {
         this.isGravity = isGravity;
         if(!isGravity)  {

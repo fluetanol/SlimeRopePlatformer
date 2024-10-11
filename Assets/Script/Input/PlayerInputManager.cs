@@ -48,7 +48,6 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
 
     public static void SetClickAction(IInputMouse inputMouse){
         _playerControls.Locomotion.Click.started += inputMouse.OnClick;
-       // _playerControls.Locomotion.Cursor.performed += inputMouse.OnCursor;
     }
 
     //움직일 시
@@ -59,11 +58,6 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
         if(IgetState.GetMoveState() != EPlayerMoveState.Jump){
             IsetState.SetMoveState(EPlayerMoveState.Run);
         }
-        /*
-        if (stateMachine._playerMoveState != EPlayerMoveState.Jump){
-            IsetState.SetMoveState(EPlayerMoveState.Run);
-            //stateMachine._playerMoveState = EPlayerMoveState.Run;
-        }*/
     }
 
     //점프할 시
@@ -75,7 +69,6 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
         {
             if (ctx.ReadValue<float>() == 1){
                 IsetState.SetMoveState(EPlayerMoveState.Jump);
-                //stateMachine._playerMoveState = EPlayerMoveState.Jump;
             }
         }
     }
@@ -83,20 +76,22 @@ public class PlayerInputManager : SingletonMonobehavior<PlayerInputManager>, IIn
     public void OnClick(InputAction.CallbackContext ctx)
     {
         PlayerStateMachine stateMachine = _playerStateData.GetPlayerStateMachine();
-        if(stateMachine._playerBehaviourState != EPlayerBehaviourState.Attack){
-            stateMachine._playerBehaviourState = EPlayerBehaviourState.Attack;
+
+        if(IgetState.GetBehaviourState() != EPlayerBehaviourState.Attack){
             Vector2 direction = (_playerData.GetPlayerInputState().CursorPosition - (Vector2)transform.position).normalized;
             float distance = _playerData.GetAttackData().attackRange;
-
             RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance);
-            if (hit.collider != null){
+
+            if (hit.collider != null)
+            {
                 _playerData.GetAttackData().attackPosition = hit.point;
-            }else{
+            }
+            else
+            {
                 _playerData.GetAttackData().attackPosition = (Vector2)transform.position + direction * distance;
             }
             _playerData.GetAttackData().attackDirection = direction;
-            //_playerData.GetPlayerInputState().CursorPosition;
-            
+            IsetState.SetBehaviourState(EPlayerBehaviourState.Attack);
         }
     }
     
